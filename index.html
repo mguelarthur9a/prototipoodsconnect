@@ -1,0 +1,2312 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ODS CONNECT - Ciência na Rua</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            blue: '#003366',
+                            navy: '#0B2545',
+                            lightBg: '#F4F7FB',
+                            red: '#E5243B',
+                            redDark: '#C5192D',
+                            green: '#22C55E',
+                            greenDark: '#15803D',
+                            yellow: '#F59E0B',
+                            gold: '#FFB800',
+                            cardBg: '#FFFFFF'
+                        }
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+
+        // URL / caminho direto para a imagem enviada
+        const OFFICIAL_LOGO_URL = 'logo.png';
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #F4F7FB; color: #1E293B; }
+        
+        .app-view { animation: fadeIn 0.25s ease-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; }
+        
+        .hidden-view { display: none !important; }
+        
+        /* DUOLINGO STYLED BUTTONS & NODES */
+        .duo-btn-3d {
+            transition: all 0.1s ease;
+            border-bottom-width: 4px;
+        }
+        .duo-btn-3d:active {
+            transform: translateY(2px);
+            border-bottom-width: 2px;
+            margin-top: 2px;
+        }
+
+        .duo-node-circle {
+            width: 72px;
+            height: 72px;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 0 rgba(0,0,0,0.15);
+            transition: all 0.15s ease;
+            position: relative;
+            z-index: 10;
+        }
+        .duo-node-circle:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 rgba(0,0,0,0.15);
+        }
+
+        /* SPEECH BUBBLE FOR MASCOT MEL */
+        .speech-bubble {
+            position: relative;
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 14px 18px;
+            border: 2px solid #E2E8F0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            left: -10px;
+            top: 50%;
+            transform: translateY(-50%);
+            border-width: 6px 10px 6px 0;
+            border-style: solid;
+            border-color: transparent #ffffff transparent transparent;
+        }
+
+        .step-locked {
+            opacity: 0.55;
+            cursor: not-allowed !important;
+            filter: grayscale(0.8);
+        }
+
+        /* TRAIL NODE CONTAINER & BADGES Z-INDEX OVERRIDES */
+        .duo-trail-node-wrapper {
+            position: relative;
+            z-index: 10;
+        }
+
+        .duo-trail-label-badge {
+            position: relative;
+            z-index: 10;
+            background-color: #FFFFFF !important;
+        }
+
+        /* LOGO FALLBACK CONTAINER STYLES */
+        .logo-placeholder-graphic {
+            background: radial-gradient(circle, #ffffff 55%, #fef3c7 100%);
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 h-screen w-full flex flex-col md:flex-row overflow-hidden select-none">
+
+    <!-- DESKTOP SIDEBAR / MOBILE BOTTOM NAV -->
+    <nav id="main-nav" class="hidden-view fixed bottom-0 left-0 w-full h-16 bg-white border-t border-slate-200 z-50 shadow-lg 
+               md:relative md:w-64 md:h-screen md:border-r md:border-t-0 md:flex md:flex-col md:justify-start transition-all shrink-0">
+        
+        <!-- Header Brand -->
+        <div class="hidden md:flex items-center p-4 border-b border-slate-100">
+            <div class="relative w-12 h-12 flex items-center justify-center mr-3 shrink-0 rounded-2xl bg-white shadow-sm p-1 border border-slate-200 overflow-hidden">
+                <svg viewBox="0 0 500 500" class="w-full h-full">
+                    <!-- ODS Color Ring -->
+                    <g transform="translate(250,250)">
+                        <path d="M 0 -220 A 220 220 0 0 1 76 -206 L 62 -169 A 180 180 0 0 0 0 -180 Z" fill="#E5243B"/>
+                        <path d="M 76 -206 A 220 220 0 0 1 141 -169 L 115 -138 A 180 180 0 0 0 62 -169 Z" fill="#DDA835"/>
+                        <path d="M 141 -169 A 220 220 0 0 1 190 -110 L 155 -90 A 180 180 0 0 0 115 -138 Z" fill="#4C9F38"/>
+                        <path d="M 190 -110 A 220 220 0 0 1 217 -38 L 177 -31 A 180 180 0 0 0 155 -90 Z" fill="#C5192D"/>
+                        <path d="M 217 -38 A 220 220 0 0 1 217 38 L 177 31 A 180 180 0 0 0 177 -31 Z" fill="#FF3A21"/>
+                        <path d="M 217 38 A 220 220 0 0 1 190 110 L 155 90 A 180 180 0 0 0 177 31 Z" fill="#26BDE2"/>
+                        <path d="M 190 110 A 220 220 0 0 1 141 169 L 115 138 A 180 180 0 0 0 155 90 Z" fill="#FCC30B"/>
+                        <path d="M 141 169 A 220 220 0 0 1 76 206 L 62 169 A 180 180 0 0 0 115 138 Z" fill="#A21942"/>
+                        <path d="M 76 206 A 220 220 0 0 1 0 220 L 0 180 A 180 180 0 0 0 62 169 Z" fill="#FD6925"/>
+                        <path d="M 0 220 A 220 220 0 0 1 -76 206 L -62 169 A 180 180 0 0 0 0 180 Z" fill="#DD1367"/>
+                        <path d="M -76 206 A 220 220 0 0 1 -141 169 L -115 138 A 180 180 0 0 0 -62 169 Z" fill="#FD9D24"/>
+                        <path d="M -141 169 A 220 220 0 0 1 -190 110 L -155 90 A 180 180 0 0 0 -115 138 Z" fill="#BF8B2E"/>
+                        <path d="M -190 110 A 220 220 0 0 1 -217 38 L -177 31 A 180 180 0 0 0 -155 90 Z" fill="#3F7E44"/>
+                        <path d="M -217 38 A 220 220 0 0 1 -217 -38 L -177 -31 A 180 180 0 0 0 -177 31 Z" fill="#0A97D9"/>
+                        <path d="M -217 -38 A 220 220 0 0 1 -190 -110 L -155 -90 A 180 180 0 0 0 -177 -31 Z" fill="#56C02B"/>
+                        <path d="M -190 -110 A 220 220 0 0 1 -141 -169 L -115 -138 A 180 180 0 0 0 -155 -90 Z" fill="#00689D"/>
+                        <path d="M -141 -169 A 220 220 0 0 1 -76 -206 L -62 -169 A 180 180 0 0 0 -115 -138 Z" fill="#19486A"/>
+                        <path d="M -76 -206 A 220 220 0 0 1 0 -220 L 0 -180 A 180 180 0 0 0 -62 -169 Z" fill="#003366"/>
+                    </g>
+                    <!-- Inner Circle Background with Soft Shadow -->
+                    <circle cx="250" cy="250" r="145" fill="#FFFFFF"/>
+                    <!-- Headphone Mascot Bee -->
+                    <g transform="translate(250, 250) scale(1.15)">
+                        <!-- Little Blue Wings -->
+                        <ellipse cx="-42" cy="-15" rx="14" ry="8" fill="#BAE6FD" opacity="0.8" transform="rotate(-15 -42 -15)"/>
+                        <ellipse cx="42" cy="-15" rx="14" ry="8" fill="#BAE6FD" opacity="0.8" transform="rotate(15 42 -15)"/>
+                        <!-- Bee Oval Body -->
+                        <ellipse cx="0" cy="0" rx="42" ry="54" fill="#F59E0B"/>
+                        <!-- Dark Stripes -->
+                        <path d="M -36 8 C -20 18, 20 18, 36 8 L 33 22 C 15 30, -15 30, -33 22 Z" fill="#1E293B"/>
+                        <path d="M -28 32 C -15 40, 15 40, 28 32 L 21 44 C 10 50, -10 50, -21 44 Z" fill="#1E293B"/>
+                        <!-- Eyes -->
+                        <circle cx="-14" cy="-12" r="5" fill="#1E293B"/>
+                        <circle cx="14" cy="-12" r="5" fill="#1E293B"/>
+                        <!-- Smile -->
+                        <path d="M -10 2 Q 0 12 10 2" fill="none" stroke="#1E293B" stroke-width="3.5" stroke-linecap="round"/>
+                        <!-- Headphone Band -->
+                        <path d="M -35 -15 C -35 -48, 35 -48, 35 -15" fill="none" stroke="#1E293B" stroke-width="8" stroke-linecap="round"/>
+                        <!-- Headphone Earpads -->
+                        <rect x="-44" y="-24" width="14" height="26" rx="7" fill="#1E293B"/>
+                        <rect x="30" y="-24" width="14" height="26" rx="7" fill="#1E293B"/>
+                    </g>
+                </svg>
+            </div>
+            <div>
+                <h1 class="text-base font-black text-[#003366] leading-none tracking-tight">ODS CONNECT</h1>
+                <span class="text-[10px] text-sky-600 font-extrabold uppercase tracking-wider block mt-0.5">Ciência na Rua</span>
+            </div>
+        </div>
+
+        <ul class="flex w-full h-full justify-around items-center md:flex-col md:justify-start md:items-stretch md:p-3 md:space-y-1">
+            <li class="flex-1 md:flex-none">
+                <button onclick="navigateTo('view-home')" id="nav-btn-home" class="nav-btn duo-btn-3d w-full flex flex-col md:flex-row items-center justify-center md:justify-start p-2 text-slate-400 hover:text-brand-blue rounded-2xl transition-colors">
+                    <i class="ph-fill ph-house text-xl md:text-2xl md:mr-3"></i>
+                    <span class="text-[10px] md:text-base font-black mt-0.5 md:mt-0">Início</span>
+                </button>
+            </li>
+            <li class="flex-1 md:flex-none">
+                <button onclick="navigateTo('view-trail')" id="nav-btn-trail" class="nav-btn duo-btn-3d w-full flex flex-col md:flex-row items-center justify-center md:justify-start p-2 text-slate-400 hover:text-brand-blue rounded-2xl transition-colors">
+                    <i class="ph-fill ph-path text-xl md:text-2xl md:mr-3"></i>
+                    <span class="text-[10px] md:text-base font-black mt-0.5 md:mt-0">Trilha</span>
+                </button>
+            </li>
+            <li class="flex-1 md:flex-none">
+                <button onclick="checkAndNavigateActions()" id="nav-btn-actions" class="nav-btn duo-btn-3d w-full flex flex-col md:flex-row items-center justify-center md:justify-start p-2 text-slate-400 hover:text-brand-blue rounded-2xl transition-colors">
+                    <i class="ph-fill ph-target text-xl md:text-2xl md:mr-3"></i>
+                    <span class="text-[10px] md:text-base font-black mt-0.5 md:mt-0">Missões</span>
+                </button>
+            </li>
+            <li class="flex-1 md:flex-none">
+                <button onclick="navigateTo('view-profile')" id="nav-btn-profile" class="nav-btn duo-btn-3d w-full flex flex-col md:flex-row items-center justify-center md:justify-start p-2 text-slate-400 hover:text-brand-blue rounded-2xl transition-colors">
+                    <i class="ph-fill ph-user text-xl md:text-2xl md:mr-3"></i>
+                    <span class="text-[10px] md:text-base font-black mt-0.5 md:mt-0">Perfil</span>
+                </button>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- MAIN VIEW CONTAINER -->
+    <main class="flex-1 h-full overflow-y-auto relative pb-24 md:pb-6 px-3 sm:px-6">
+
+        <!-- SCREEN 1: LOGIN / WELCOME -->
+        <section id="view-auth" class="app-view min-h-full w-full flex flex-col items-center justify-center p-4 sm:p-6 bg-slate-50 relative overflow-y-auto">
+            <div class="w-full max-w-sm sm:max-w-md mx-auto flex flex-col items-center my-auto py-6">
+                
+                <!-- NOVA LOGO PRINCIPAL (ABELHA DE FONES DE OUVIDO + ANEL DOS ODS) -->
+                <div class="relative w-64 h-64 sm:w-80 sm:h-80 flex items-center justify-center mb-6 rounded-3xl bg-white p-3 shadow-xl border-2 border-slate-100 overflow-hidden shrink-0">
+                    <svg viewBox="0 0 500 500" class="w-full h-full">
+                        <!-- Ring of ODS Colors -->
+                        <g transform="translate(250,250)">
+                            <path d="M 0 -220 A 220 220 0 0 1 76 -206 L 62 -169 A 180 180 0 0 0 0 -180 Z" fill="#E5243B"/>
+                            <path d="M 76 -206 A 220 220 0 0 1 141 -169 L 115 -138 A 180 180 0 0 0 62 -169 Z" fill="#DDA835"/>
+                            <path d="M 141 -169 A 220 220 0 0 1 190 -110 L 155 -90 A 180 180 0 0 0 115 -138 Z" fill="#4C9F38"/>
+                            <path d="M 190 -110 A 220 220 0 0 1 217 -38 L 177 -31 A 180 180 0 0 0 155 -90 Z" fill="#C5192D"/>
+                            <path d="M 217 -38 A 220 220 0 0 1 217 38 L 177 31 A 180 180 0 0 0 177 -31 Z" fill="#FF3A21"/>
+                            <path d="M 217 38 A 220 220 0 0 1 190 110 L 155 90 A 180 180 0 0 0 177 31 Z" fill="#26BDE2"/>
+                            <path d="M 190 110 A 220 220 0 0 1 141 169 L 115 138 A 180 180 0 0 0 155 90 Z" fill="#FCC30B"/>
+                            <path d="M 141 169 A 220 220 0 0 1 76 206 L 62 169 A 180 180 0 0 0 115 138 Z" fill="#A21942"/>
+                            <path d="M 76 206 A 220 220 0 0 1 0 220 L 0 180 A 180 180 0 0 0 62 169 Z" fill="#FD6925"/>
+                            <path d="M 0 220 A 220 220 0 0 1 -76 206 L -62 169 A 180 180 0 0 0 0 180 Z" fill="#DD1367"/>
+                            <path d="M -76 206 A 220 220 0 0 1 -141 169 L -115 138 A 180 180 0 0 0 -62 169 Z" fill="#FD9D24"/>
+                            <path d="M -141 169 A 220 220 0 0 1 -190 110 L -155 90 A 180 180 0 0 0 -115 138 Z" fill="#BF8B2E"/>
+                            <path d="M -190 110 A 220 220 0 0 1 -217 38 L -177 31 A 180 180 0 0 0 -155 90 Z" fill="#3F7E44"/>
+                            <path d="M -217 38 A 220 220 0 0 1 -217 -38 L -177 -31 A 180 180 0 0 0 -177 31 Z" fill="#0A97D9"/>
+                            <path d="M -217 -38 A 220 220 0 0 1 -190 -110 L -155 -90 A 180 180 0 0 0 -177 -31 Z" fill="#56C02B"/>
+                            <path d="M -190 -110 A 220 220 0 0 1 -141 -169 L -115 -138 A 180 180 0 0 0 -155 -90 Z" fill="#00689D"/>
+                            <path d="M -141 -169 A 220 220 0 0 1 -76 -206 L -62 -169 A 180 180 0 0 0 -115 -138 Z" fill="#19486A"/>
+                            <path d="M -76 -206 A 220 220 0 0 1 0 -220 L 0 -180 A 180 180 0 0 0 -62 -169 Z" fill="#003366"/>
+                        </g>
+
+                        <!-- Soft Drop Shadow Circle for Center -->
+                        <circle cx="250" cy="254" r="145" fill="#000000" opacity="0.04"/>
+                        <circle cx="250" cy="250" r="145" fill="#FFFFFF"/>
+
+                        <!-- Mascot Bee with Headphones -->
+                        <g transform="translate(250, 250) scale(1.25)">
+                            <!-- Little Blue Wings -->
+                            <ellipse cx="-42" cy="-15" rx="14" ry="8" fill="#BAE6FD" opacity="0.85" transform="rotate(-15 -42 -15)"/>
+                            <ellipse cx="42" cy="-15" rx="14" ry="8" fill="#BAE6FD" opacity="0.85" transform="rotate(15 42 -15)"/>
+                            <!-- Bee Oval Body -->
+                            <ellipse cx="0" cy="0" rx="42" ry="54" fill="#F59E0B"/>
+                            <!-- Dark Stripes -->
+                            <path d="M -36 8 C -20 18, 20 18, 36 8 L 33 22 C 15 30, -15 30, -33 22 Z" fill="#1E293B"/>
+                            <path d="M -28 32 C -15 40, 15 40, 28 32 L 21 44 C 10 50, -10 50, -21 44 Z" fill="#1E293B"/>
+                            <!-- Eyes -->
+                            <circle cx="-14" cy="-12" r="5" fill="#1E293B"/>
+                            <circle cx="14" cy="-12" r="5" fill="#1E293B"/>
+                            <!-- Cute Smile -->
+                            <path d="M -10 2 Q 0 12 10 2" fill="none" stroke="#1E293B" stroke-width="3.5" stroke-linecap="round"/>
+                            <!-- Headphone Arch Band -->
+                            <path d="M -35 -15 C -35 -48, 35 -48, 35 -15" fill="none" stroke="#1E293B" stroke-width="8" stroke-linecap="round"/>
+                            <!-- Headphone Earpads -->
+                            <rect x="-44" y="-24" width="14" height="26" rx="7" fill="#1E293B"/>
+                            <rect x="30" y="-24" width="14" height="26" rx="7" fill="#1E293B"/>
+                        </g>
+                    </svg>
+                </div>
+
+                <!-- BALÃO DA MASCOTE BEBBEE -->
+                <div class="flex items-center space-x-3 mb-6 w-full bg-amber-50 p-3.5 sm:p-4 rounded-3xl border-2 border-amber-200 shadow-sm">
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white shrink-0 flex items-center justify-center border-2 border-amber-300 shadow overflow-hidden p-1">
+                        <svg viewBox="0 0 100 100" class="w-full h-full">
+                            <ellipse cx="50" cy="50" rx="30" ry="38" fill="#F59E0B"/>
+                            <path d="M 26 55 Q 50 65 74 55" fill="none" stroke="#1E293B" stroke-width="6"/>
+                            <circle cx="40" cy="40" r="4" fill="#1E293B"/>
+                            <circle cx="60" cy="40" r="4" fill="#1E293B"/>
+                            <path d="M 30 50 Q 50 60 70 50" fill="none" stroke="#1E293B" stroke-width="3"/>
+                            <path d="M 25 35 C 25 15, 75 15, 75 35" fill="none" stroke="#1E293B" stroke-width="6"/>
+                            <rect x="18" y="28" width="10" height="18" rx="5" fill="#1E293B"/>
+                            <rect x="72" y="28" width="10" height="18" rx="5" fill="#1E293B"/>
+                        </svg>
+                    </div>
+                    <div class="text-xs sm:text-sm font-black text-amber-950 leading-snug">
+                        "Aprenda, jogue e transforme sua comunidade com os 18 ODS!"
+                    </div>
+                </div>
+
+                <div class="text-center mb-6">
+                    <h1 class="text-3xl sm:text-4xl font-black text-[#003366] tracking-tight">ODS<span class="text-sky-500">CONNECT</span></h1>
+                    <p class="text-[10px] sm:text-xs font-black text-sky-700 tracking-widest uppercase mt-1">CIÊNCIA NA RUA</p>
+                </div>
+
+                <div class="w-full space-y-4">
+                    <div id="form-login-container" class="space-y-4">
+                        <div class="space-y-1.5">
+                            <label class="text-xs sm:text-sm font-extrabold text-slate-700">Como você quer ser chamado?</label>
+                            <div class="relative">
+                                <i class="ph-bold ph-user absolute left-4 top-3.5 text-slate-400 text-lg sm:text-xl"></i>
+                                <input type="text" id="login-email" value="" placeholder="Digite seu nome..." 
+                                       class="w-full bg-white border-2 border-slate-200 rounded-2xl py-3 sm:py-3.5 pl-11 sm:pl-12 pr-4 text-sm sm:text-base font-bold text-slate-800 focus:outline-none focus:border-brand-blue shadow-sm">
+                            </div>
+                        </div>
+
+                        <button onclick="doLogin()" class="w-full duo-btn-3d bg-emerald-500 border-b-emerald-700 hover:bg-emerald-600 text-white font-black py-3.5 sm:py-4 rounded-2xl shadow-lg transition-all flex items-center justify-center text-sm sm:text-base space-x-2 min-h-[48px]">
+                            <span>Começar a Aprender</span>
+                            <i class="ph-bold ph-arrow-right text-lg sm:text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCREEN 2: INÍCIO (GRID DOS ODS) -->
+        <section id="view-home" class="app-view hidden-view min-h-full p-2 sm:p-4 md:p-6 max-w-5xl mx-auto space-y-4 sm:space-y-5">
+            <div class="flex items-center justify-between bg-white p-3.5 sm:p-4 rounded-3xl shadow-sm border-2 border-slate-100">
+                <div class="flex items-center space-x-3 sm:space-x-3.5 cursor-pointer" onclick="navigateTo('view-profile')">
+                    <div id="img-home-avatar" class="relative w-12 h-12 sm:w-14 sm:h-14 bg-brand-blue text-white font-black rounded-full flex items-center justify-center border-2 border-sky-100 shadow text-xl sm:text-2xl shrink-0">
+                        N
+                    </div>
+                    <div>
+                        <h2 class="text-base sm:text-lg font-extrabold text-brand-blue leading-tight" id="lbl-home-user">Olá, Novo Usuário!</h2>
+                        <p class="text-[11px] sm:text-xs font-bold text-slate-500 mt-0.5">Escolha um ODS para jogar na trilha!</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative">
+                <i class="ph-bold ph-magnifying-glass absolute left-4 top-3.5 text-slate-400 text-lg sm:text-xl"></i>
+                <input type="text" id="ods-search" onkeyup="filterOdsGrid()" placeholder="Buscar ODS..." 
+                       class="w-full bg-slate-200/70 border-none rounded-2xl py-3 sm:py-3.5 pl-11 sm:pl-12 pr-4 text-sm sm:text-base font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-blue shadow-inner">
+            </div>
+
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-lg sm:text-xl font-black text-brand-blue">Jornada dos 18 ODS</h3>
+                    <p class="text-[11px] sm:text-xs font-semibold text-slate-500 mt-0.5">Selecione para entrar na Trilha em Zigue-Zague estilo Duolingo.</p>
+                </div>
+            </div>
+
+            <div id="ods-grid-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3">
+                <!-- Gerado via JS -->
+            </div>
+        </section>
+
+        <!-- SCREEN 3: TRILHA EM ZIGUE-ZAGUE DUOLINGO (LEARNING PATH) -->
+        <section id="view-trail" class="app-view hidden-view min-h-full p-2 sm:p-4 md:p-6 max-w-lg mx-auto space-y-4 sm:space-y-6">
+            <div class="flex items-center justify-between pb-2 border-b-2 border-slate-200">
+                <button onclick="navigateTo('view-home')" class="text-slate-700 hover:text-slate-900 font-bold text-lg p-1"><i class="ph-bold ph-caret-left text-xl"></i></button>
+                <h2 class="text-sm sm:text-base font-black text-slate-800" id="trail-header-title">Trilha de Aprendizagem</h2>
+                <div class="w-6"></div>
+            </div>
+
+            <!-- DYNAMIC ODS HEADER BANNER -->
+            <div id="trail-ods-banner" class="rounded-3xl p-4 sm:p-5 text-white shadow-md relative overflow-hidden flex justify-between items-center transition-all duration-300">
+                <div class="z-10 max-w-[70%]">
+                    <span id="trail-ods-badge" class="text-[10px] sm:text-xs font-black uppercase tracking-wider bg-white/20 px-2.5 py-1 rounded-lg backdrop-blur-sm">ODS 1</span>
+                    <h3 id="trail-ods-title" class="text-xl sm:text-2xl font-black leading-tight mt-1.5 sm:mt-2">Erradicação da Pobreza</h3>
+                    <p id="trail-ods-desc" class="text-[11px] sm:text-xs font-medium text-white/90 mt-1">Sua jornada de aprendizado prático.</p>
+                </div>
+                <div class="z-10 opacity-95 bg-white/20 p-2.5 sm:p-3.5 rounded-2xl backdrop-blur-sm border border-white/30 flex items-center justify-center shrink-0">
+                    <i id="trail-ods-icon" class="ph-fill ph-users-three text-3xl sm:text-5xl"></i>
+                </div>
+            </div>
+
+            <!-- MASCOT BEBBEE SPEECH BUBBLE -->
+            <div class="flex items-center space-x-3 bg-white p-3.5 sm:p-4 rounded-3xl border-2 border-slate-200 shadow-sm">
+                <div class="w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-white shrink-0 flex items-center justify-center border-2 border-amber-300 shadow overflow-hidden p-1">
+                    <svg viewBox="0 0 100 100" class="w-full h-full">
+                        <ellipse cx="50" cy="50" rx="30" ry="38" fill="#F59E0B"/>
+                        <circle cx="40" cy="40" r="4" fill="#1E293B"/>
+                        <circle cx="60" cy="40" r="4" fill="#1E293B"/>
+                        <path d="M 35 52 Q 50 62 65 52" fill="none" stroke="#1E293B" stroke-width="3.5" stroke-linecap="round"/>
+                        <path d="M 25 35 C 25 15, 75 15, 75 35" fill="none" stroke="#1E293B" stroke-width="6"/>
+                        <rect x="18" y="28" width="10" height="18" rx="5" fill="#1E293B"/>
+                        <rect x="72" y="28" width="10" height="18" rx="5" fill="#1E293B"/>
+                    </svg>
+                </div>
+                <div class="text-xs sm:text-sm font-black text-slate-800 leading-snug">
+                    <span id="trail-mascot-tip">Complete cada etapa do caminho para desbloquear a próxima missão!</span>
+                </div>
+            </div>
+
+            <!-- DUOLINGO ZIGZAG PATHWAY CONTAINER -->
+            <div id="duo-trail-container" class="relative py-4 sm:py-6 flex flex-col items-center space-y-12 sm:space-y-14 w-full overflow-x-hidden">
+                <!-- DYNAMIC SVG PATH CONNECTOR (FICA ESTRITAMENTE ATRÁS DOS NÓS) -->
+                <svg id="trail-svg-canvas" class="absolute inset-0 w-full h-full pointer-events-none" style="z-index: 0;">
+                    <path id="trail-path-line" fill="none" stroke="#E5243B" stroke-width="6" stroke-dasharray="8,10" stroke-linecap="round"/>
+                </svg>
+
+                <!-- NODE 1: CONCEITO INICIAL -->
+                <div class="duo-trail-node-wrapper flex flex-col items-center group cursor-pointer" onclick="handleTrailStepClick('concept')">
+                    <div id="duo-node-1" class="duo-node-circle text-white z-10 relative bg-slate-800">
+                        <i id="duo-icon-1" class="ph-fill ph-book-open text-2xl sm:text-3xl"></i>
+                    </div>
+                    <span id="duo-label-1" class="duo-trail-label-badge mt-2 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-xl shadow border border-slate-200 text-[11px] sm:text-xs font-black text-slate-800">1. Conceito Inicial</span>
+                </div>
+
+                <!-- NODE 2: PRIMEIROS CONTEXTOS -->
+                <div id="duo-node-2-wrap" class="duo-trail-node-wrapper flex flex-col items-center group cursor-pointer transform translate-x-10 sm:translate-x-14 step-locked" onclick="handleTrailStepClick('quiz')">
+                    <div id="duo-node-2" class="duo-node-circle bg-slate-400 text-white z-10 relative">
+                        <i id="duo-icon-2" class="ph-fill ph-lock-key text-2xl sm:text-3xl"></i>
+                    </div>
+                    <span id="duo-label-2" class="duo-trail-label-badge mt-2 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-xl shadow border border-slate-200 text-[11px] sm:text-xs font-black text-slate-800">2. Quiz de Fixação</span>
+                </div>
+
+                <!-- NODE 3: GRANDE DESAFIO -->
+                <div id="duo-node-3-wrap" class="duo-trail-node-wrapper flex flex-col items-center group cursor-pointer transform -translate-x-10 sm:-translate-x-14 step-locked" onclick="handleTrailStepClick('challenge')">
+                    <div id="duo-node-3" class="duo-node-circle bg-slate-400 text-white z-10 relative">
+                        <i id="duo-icon-3" class="ph-fill ph-lock-key text-2xl sm:text-3xl"></i>
+                    </div>
+                    <span id="duo-label-3" class="duo-trail-label-badge mt-2 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-xl shadow border border-slate-200 text-[11px] sm:text-xs font-black text-slate-800">3. Grande Desafio (5 min)</span>
+                </div>
+
+                <!-- NODE 4: ATITUDES QUE TRANSFORMAM -->
+                <div id="duo-node-4-wrap" class="duo-trail-node-wrapper flex flex-col items-center group cursor-pointer transform translate-x-6 sm:translate-x-8 step-locked" onclick="handleTrailStepClick('actions')">
+                    <div id="duo-node-4" class="duo-node-circle bg-slate-400 text-white z-10 relative">
+                        <i id="duo-icon-4" class="ph-fill ph-lock-key text-2xl sm:text-3xl"></i>
+                    </div>
+                    <span id="duo-label-4" class="duo-trail-label-badge mt-2 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-xl shadow border border-slate-200 text-[11px] sm:text-xs font-black text-slate-800">4. Missões Práticas</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCREEN 4: CONCEITO INICIAL -->
+        <section id="view-lesson-intro" class="app-view hidden-view min-h-full p-2 sm:p-4 md:p-6 max-w-2xl mx-auto space-y-4">
+            <div id="lesson-ods-banner" class="rounded-3xl p-4 sm:p-5 text-white shadow-md flex justify-between items-center transition-all">
+                <div class="max-w-[75%]">
+                    <span id="lesson-ods-badge" class="text-[10px] sm:text-xs font-black uppercase tracking-wider bg-white/20 px-2.5 py-1 rounded-md">ODS 1</span>
+                    <h3 id="lesson-ods-title" class="text-xl sm:text-2xl font-black mt-1">Erradicação da Pobreza</h3>
+                    <p id="lesson-ods-sub" class="text-[11px] sm:text-xs text-white/90 font-medium mt-0.5">Conceito, dados práticos e relevância do objetivo.</p>
+                </div>
+                <div id="lesson-ods-icon-box" class="bg-white/20 p-2.5 sm:p-3.5 rounded-2xl backdrop-blur-sm border border-white/30 flex items-center justify-center shrink-0">
+                    <i id="lesson-ods-icon" class="ph-fill ph-users-three text-3xl sm:text-4xl text-white"></i>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-3xl p-4 sm:p-5 shadow-sm border-2 border-slate-100 space-y-4">
+                <div class="flex items-center space-x-3 pb-3 border-b border-slate-100">
+                    <div id="lesson-ods-official-logo" class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex flex-col items-center justify-center text-white shadow-md font-black shrink-0 transition-all p-1 text-center">
+                        <span id="lesson-logo-num-text" class="text-[10px] sm:text-xs font-extrabold uppercase leading-none opacity-90">ODS</span>
+                        <span id="lesson-logo-num-val" class="text-xl sm:text-2xl font-black leading-none my-0.5">1</span>
+                    </div>
+                    <div>
+                        <span id="lesson-logo-ods-tag" class="text-[9px] sm:text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded text-white inline-block">OBJETIVO DE DESENVOLVIMENTO SUSTENTÁVEL</span>
+                        <h3 id="lesson-logo-ods-name" class="text-sm sm:text-base font-black text-slate-800 mt-1 leading-tight">Erradicação da Pobreza</h3>
+                        <p class="text-[11px] sm:text-xs text-slate-500 font-bold mt-0.5">Diretriz da Organização das Nações Unidas (ONU)</p>
+                    </div>
+                </div>
+
+                <p id="lesson-ods-theory" class="text-xs sm:text-sm text-slate-800 leading-relaxed font-medium">
+                    A pobreza extrema vai muito além da simples falta de recursos financeiros...
+                </p>
+
+                <!-- RESPONSIVE IMAGE CONTAINER WITH EMBEDDED CAPTION -->
+                <div id="lesson-ods-illustration-container" class="w-full min-h-[180px] sm:min-h-[220px] max-h-[340px] rounded-2xl overflow-hidden relative flex items-center justify-center bg-slate-100 border border-slate-200/80 shadow-sm transition-all">
+                </div>
+
+                <div id="lesson-importance-box" class="rounded-2xl p-3.5 sm:p-4 flex items-start space-x-3 sm:space-x-3.5 border transition-all">
+                    <div id="lesson-importance-icon-bg" class="w-8 h-8 sm:w-10 sm:h-10 rounded-full text-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+                        <i class="ph-fill ph-lightbulb text-xl sm:text-2xl"></i>
+                    </div>
+                    <div>
+                        <h4 id="lesson-importance-title" class="text-xs sm:text-sm font-black text-slate-900">Por que isto importa para a sua vida diária?</h4>
+                        <p id="lesson-ods-importance" class="text-[11px] sm:text-xs text-slate-700 font-medium mt-1 leading-relaxed">
+                            Promover o microempreendedorismo no seu bairro...
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <button id="btn-finish-lesson-intro" onclick="finishStep1()" class="w-full duo-btn-3d text-white font-black py-3.5 sm:py-4 rounded-2xl shadow-lg transition-all flex items-center justify-center space-x-2 text-sm sm:text-base min-h-[48px]">
+                <span>Concluir Leitura e Ir para os Primeiros Contextos</span>
+                <i class="ph-bold ph-arrow-right text-lg sm:text-xl"></i>
+            </button>
+        </section>
+
+        <!-- SCREEN 5: PRIMEIROS CONTEXTOS -->
+        <section id="view-lesson-quiz" class="app-view hidden-view min-h-full p-2 sm:p-4 md:p-6 max-w-2xl mx-auto space-y-4">
+            <!-- DYNAMIC QUIZ HEADER BANNER -->
+            <div id="simple-quiz-banner" class="rounded-3xl p-4 text-white shadow-md flex justify-between items-center transition-all">
+                <div>
+                    <span id="simple-quiz-badge" class="text-[10px] sm:text-xs font-black uppercase tracking-wider bg-white/20 px-2.5 py-1 rounded-md">ODS 1</span>
+                    <h3 id="simple-quiz-title" class="text-lg sm:text-xl font-black mt-1">Quiz de Fixação</h3>
+                </div>
+                <div class="bg-white/20 p-2.5 sm:p-3 rounded-xl backdrop-blur-sm border border-white/30 flex items-center justify-center shrink-0">
+                    <i id="simple-quiz-icon" class="ph-fill ph-book-open text-2xl sm:text-3xl text-white"></i>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-3xl p-4 sm:p-5.5 shadow-sm border-2 border-slate-100 space-y-4">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-extrabold px-3 py-1 rounded-full text-white shadow-sm" id="simple-q-count">1/3</span>
+                </div>
+
+                <h3 class="text-sm sm:text-base font-black text-slate-800 leading-snug" id="simple-q-title">
+                    Pergunta do Quiz...
+                </h3>
+
+                <div class="space-y-3" id="simple-q-options">
+                </div>
+
+                <div id="simple-quiz-feedback" class="hidden-view rounded-2xl p-3.5 sm:p-4 flex items-start space-x-3 transition-all">
+                    <div id="feedback-icon-box" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full text-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+                        <i id="feedback-icon" class="ph-bold ph-check text-lg sm:text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-xs sm:text-sm font-black" id="feedback-title">Excelente!</h4>
+                        <p class="text-[11px] sm:text-xs font-medium mt-0.5 leading-relaxed" id="feedback-text">
+                            Feedback da questão...
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <button id="btn-next-simple" onclick="nextSimpleQuiz()" class="w-full duo-btn-3d text-white font-black py-3.5 sm:py-4 rounded-2xl shadow-lg transition-all flex items-center justify-center space-x-2 text-sm sm:text-base min-h-[48px]">
+                <span>Próxima pergunta</span>
+                <i class="ph-bold ph-arrow-right text-lg sm:text-xl"></i>
+            </button>
+        </section>
+
+        <!-- SCREEN 6: RETRY QUIZ DE FIXAÇÃO (CASO NÃO ACERTE MAIS DE 2 QUESTÕES) -->
+        <section id="view-simple-quiz-retry" class="app-view hidden-view min-h-full p-2 sm:p-4 md:p-6 max-w-2xl mx-auto space-y-5">
+            <div class="bg-rose-50/80 border-2 border-rose-200/90 rounded-3xl p-6 sm:p-8 text-center space-y-4 shadow-sm">
+                <!-- Circular Alert Icon -->
+                <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-rose-500 text-white flex items-center justify-center mx-auto shadow-md">
+                    <i class="ph-bold ph-warning-octagon text-4xl sm:text-5xl"></i>
+                </div>
+
+                <h3 class="text-2xl sm:text-3xl font-black text-amber-950 tracking-tight">Precisa de mais atenção!</h3>
+
+                <p id="simple-retry-msg" class="text-xs sm:text-sm text-rose-900 font-semibold max-w-md mx-auto leading-relaxed">
+                    Você acertou 1 de 3 questões. Para avançar para o Grande Desafio, é necessário acertar pelo menos 2 questões.
+                </p>
+
+                <!-- Performance Badge -->
+                <div class="inline-block bg-white border-2 border-rose-200/90 px-6 py-2 rounded-full shadow-xs">
+                    <span id="simple-retry-score-badge" class="text-xs sm:text-sm font-black text-rose-800">Seu desempenho: 1/3 acertos</span>
+                </div>
+            </div>
+
+            <!-- Retry Button -->
+            <button id="btn-retry-simple-action" onclick="startSimpleQuiz()" class="w-full duo-btn-3d bg-rose-600 border-b-rose-800 hover:bg-rose-700 text-white font-black py-4 rounded-2xl shadow-lg transition-all flex items-center justify-center space-x-2 text-base sm:text-lg min-h-[52px]">
+                <i class="ph-bold ph-arrow-counter-clockwise text-xl"></i>
+                <span>Tentar Novamente</span>
+            </button>
+        </section>
+
+        <!-- SCREEN 6.5: INTRODUÇÃO AO GRANDE DESAFIO (CASO ACERTE 2 OU MAIS QUESTAÇÕES) -->
+        <section id="view-grande-desafio-intro" class="app-view hidden-view min-h-full p-2 sm:p-4 md:p-6 max-w-2xl mx-auto space-y-5">
+            <!-- Yellow Trophy Banner -->
+            <div class="bg-amber-100/80 border-2 border-amber-300 rounded-3xl p-4 sm:p-5 flex items-center space-x-4 shadow-sm">
+                <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-amber-400 text-white flex items-center justify-center shrink-0 shadow-md border-2 border-amber-300">
+                    <i class="ph-fill ph-trophy text-3xl sm:text-4xl"></i>
+                </div>
+                <p class="text-xs sm:text-sm font-extrabold text-amber-950 leading-relaxed">
+                    Neste teste acumulativo, você responderá a 5 questões contextualizadas com múltipla escolha em até 05:00 minutos!
+                </p>
+            </div>
+
+            <!-- Instructions Card -->
+            <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border-2 border-slate-100 space-y-5">
+                <!-- Item 1 -->
+                <div class="flex items-start space-x-4 pb-4 border-b border-slate-100">
+                    <div class="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 text-slate-800 flex items-center justify-center shrink-0 mt-0.5">
+                        <i class="ph-bold ph-check-square-offset text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-black text-slate-900">Caixas de Seleção Múltipla</h4>
+                        <p class="text-xs text-slate-500 font-semibold mt-0.5">Marque todas as opções pertinentes para pontuar completamente</p>
+                    </div>
+                </div>
+
+                <!-- Item 2 -->
+                <div class="flex items-start space-x-4 pb-4 border-b border-slate-100">
+                    <div class="w-10 h-10 rounded-xl bg-amber-100 border border-amber-200 text-amber-700 flex items-center justify-center shrink-0 mt-0.5">
+                        <i class="ph-fill ph-clock text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-black text-slate-900">Tempo limite: 05:00 minutos</h4>
+                        <p class="text-xs text-slate-500 font-semibold mt-0.5">Cronômetro regressivo com contagem precisa</p>
+                    </div>
+                </div>
+
+                <!-- Item 3 -->
+                <div class="flex items-start space-x-4">
+                    <div class="w-10 h-10 rounded-xl bg-amber-100 border border-amber-200 text-amber-600 flex items-center justify-center shrink-0 mt-0.5">
+                        <i class="ph-fill ph-coins text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-black text-slate-900">Recompensa</h4>
+                        <p class="text-xs text-slate-500 font-semibold mt-0.5">+ 50 moedas no seu Perfil</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Start Challenge Button -->
+            <button id="btn-start-gd" onclick="startGrandeDesafio()" class="w-full duo-btn-3d text-white font-black py-4 rounded-2xl shadow-lg transition-all flex items-center justify-center space-x-2 text-base sm:text-lg min-h-[52px]">
+                <span>Iniciar Grande Desafio (05:00)</span>
+                <i class="ph-bold ph-arrow-right text-xl"></i>
+            </button>
+        </section>
+
+        <!-- SCREEN 7: GRANDE DESAFIO QUIZ -->
+        <section id="view-grande-desafio-quiz" class="app-view hidden-view min-h-full p-2 sm:p-4 md:p-6 max-w-2xl mx-auto space-y-4">
+            <div id="gd-quiz-banner" class="rounded-3xl p-3.5 sm:p-4 text-white shadow-md flex justify-between items-center transition-all">
+                <div class="max-w-[65%]">
+                    <span id="gd-quiz-badge" class="text-[10px] sm:text-xs font-black uppercase tracking-wider bg-white/20 px-2.5 py-1 rounded-md">ODS 1</span>
+                    <h3 id="gd-quiz-title" class="text-base sm:text-lg font-black mt-1 truncate">Erradicação da Pobreza</h3>
+                </div>
+                <div class="bg-white/20 px-3 py-1.5 rounded-xl backdrop-blur-sm border border-white/30 flex items-center space-x-1.5 sm:space-x-2 shrink-0">
+                    <i class="ph-bold ph-clock text-base sm:text-lg"></i>
+                    <span id="gd-timer-clock" class="text-xs sm:text-sm font-black tracking-widest font-mono">04:57</span>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-3xl p-4 sm:p-5 shadow-sm border-2 border-slate-100 space-y-4">
+                <div class="flex justify-between items-center text-[11px] sm:text-xs font-extrabold gap-2">
+                    <span class="bg-sky-50 text-sky-800 px-2.5 py-1 rounded-full border border-sky-100 shrink-0" id="gd-q-number">Questão 1 de 5</span>
+                    <span class="text-amber-800 text-[9px] sm:text-[10px] font-black uppercase bg-amber-50 px-2.5 py-1 rounded-full border border-amber-200 truncate">Marque todas as opções corretas</span>
+                </div>
+
+                <h3 class="text-xs sm:text-sm font-black text-slate-800 leading-snug" id="gd-q-title">
+                    Pergunta do Desafio...
+                </h3>
+
+                <div class="space-y-2.5 sm:space-y-3" id="gd-options">
+                </div>
+            </div>
+
+            <button id="btn-next-gd" onclick="nextGdQuestion()" class="w-full duo-btn-3d text-white font-black py-3.5 sm:py-4 rounded-2xl shadow-lg transition-all flex items-center justify-center space-x-2 text-sm sm:text-base min-h-[48px]">
+                <span id="btn-next-gd-text">Próxima questão</span>
+                <i class="ph-bold ph-arrow-right text-lg sm:text-xl"></i>
+            </button>
+        </section>
+
+        <!-- TELA 1: RESULTADO DO GRANDE DESAFIO DO ODS -->
+        <section id="view-gd-results" class="app-view hidden-view min-h-full p-2 sm:p-4 md:p-6 max-w-2xl mx-auto space-y-4">
+            <!-- Bebbee Mascot Top Card -->
+            <div class="bg-amber-50/90 border-2 border-amber-300 rounded-3xl p-5 sm:p-6 text-center space-y-2 relative overflow-hidden shadow-sm">
+                <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-amber-400 flex items-center justify-center mx-auto shadow-md border-2 border-white overflow-hidden shrink-0">
+                    <span class="text-sm font-black text-amber-950">Bebbee</span>
+                </div>
+                <h3 class="text-2xl sm:text-3xl font-black text-amber-950">Desafio Concluído!</h3>
+                <p class="text-xs sm:text-sm font-extrabold text-amber-900/80">Seu desempenho aumentou seu progresso em Impacto Social!</p>
+            </div>
+
+            <!-- Score Circular & Stats Box -->
+            <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border-2 border-slate-100 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:divide-x sm:divide-slate-100 items-center">
+                <div class="flex flex-col items-center justify-center space-y-1 py-2">
+                    <div class="relative w-28 h-28 sm:w-32 sm:h-32 flex items-center justify-center">
+                        <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="40" fill="transparent" stroke="#E2E8F0" stroke-width="10" />
+                            <circle id="res-score-circle" cx="50" cy="50" r="40" fill="transparent" stroke="#003366" stroke-width="10" 
+                                    stroke-linecap="round" stroke-dasharray="251.2" stroke-dashoffset="251.2" class="transition-all duration-1000 ease-out" />
+                        </svg>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <span class="text-2xl sm:text-3xl font-black text-slate-800" id="res-score-pct">75%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sm:pl-6 flex flex-col justify-center space-y-4 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
+                    <div class="flex items-center space-x-3.5">
+                        <div class="w-10 h-10 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center shrink-0">
+                            <i class="ph-fill ph-clock text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider">TEMPO UTILIZADO</p>
+                            <p class="text-sm sm:text-base font-black text-slate-800" id="res-time-spent">00:19</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-3.5">
+                        <div class="w-10 h-10 rounded-full bg-amber-100 text-amber-500 flex items-center justify-center shrink-0">
+                            <i class="ph-fill ph-coins text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider">MOEDAS GANHAS</p>
+                            <p class="text-sm sm:text-base font-black text-slate-800" id="res-coins-earned">+ 50</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="space-y-3 pt-2">
+                <button onclick="renderGabarito(); navigateTo('view-gabarito');" class="w-full duo-btn-3d bg-white border-2 border-slate-900 text-slate-900 font-black py-3.5 rounded-2xl transition-all flex items-center justify-center space-x-2 text-sm sm:text-base min-h-[48px]">
+                    <span>Ver gabarito comentado</span>
+                    <i class="ph-bold ph-caret-right text-lg"></i>
+                </button>
+
+                <button id="btn-res-actions" onclick="handleActionsNavigation()" class="w-full duo-btn-3d text-white font-black py-4 rounded-2xl shadow-lg transition-all flex items-center justify-center space-x-2 text-base sm:text-lg min-h-[52px]">
+                    <span id="btn-res-actions-text">Ir para Atitudes que Transformam</span>
+                    <i id="btn-res-actions-icon" class="ph-bold ph-arrow-right text-xl"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- TELA 2: ESCOLHA DA MISSÃO PRÁTICA (BANCO DE MISSÕES) -->
+        <section id="view-actions-list" class="app-view hidden-view min-h-full p-2 sm:p-4 md:p-6 max-w-2xl mx-auto space-y-4">
+            <!-- Header Banner ODS -->
+            <div id="actions-ods-banner" class="rounded-3xl p-5 text-white shadow-md flex justify-between items-center transition-all">
+                <div class="max-w-[70%]">
+                    <span id="actions-ods-badge" class="text-xs font-black uppercase tracking-wider bg-white/20 px-2.5 py-1 rounded-md">ODS 1</span>
+                    <h3 id="actions-ods-title" class="text-xl sm:text-2xl font-black mt-1">Erradicação da Pobreza</h3>
+                    <p class="text-xs font-medium text-white/90 mt-0.5">Pequenas ações fazem grandes diferenças.</p>
+                </div>
+                <div class="bg-white/20 p-3 rounded-2xl backdrop-blur-sm border border-white/30 flex items-center justify-center shrink-0">
+                    <i id="actions-ods-icon" class="ph-fill ph-users-three text-4xl text-white"></i>
+                </div>
+            </div>
+
+            <!-- Yellow Sub-Header Card -->
+            <div class="bg-amber-50/90 border-2 border-amber-300 rounded-3xl p-4 flex items-center space-x-3.5 shadow-sm">
+                <div class="w-12 h-12 rounded-full bg-amber-400 text-amber-950 flex items-center justify-center shrink-0 font-black shadow-sm">
+                    <i class="ph-bold ph-target text-2xl"></i>
+                </div>
+                <div>
+                    <h4 class="text-sm font-black text-amber-950">Banco de Missões Práticas</h4>
+                    <p class="text-xs text-amber-900/80 font-semibold mt-0.5">Escolha uma microação do catálogo oficial para executar no seu dia a dia.</p>
+                </div>
+            </div>
+
+            <!-- List of Mission Options -->
+            <div id="actions-list-container" class="space-y-3">
+                <!-- Gerado via JS -->
+            </div>
+        </section>
+
+        <!-- TELA 3: DETALHES DA MISSÃO PRÁTICA SELECIONADA -->
+        <section id="view-action-detail" class="app-view hidden-view min-h-full p-2 sm:p-4 md:p-6 max-w-2xl mx-auto space-y-4">
+            <!-- Top Header Banner ODS -->
+            <div id="action-detail-banner" class="rounded-3xl p-5 text-white shadow-md flex justify-between items-center transition-all">
+                <div>
+                    <span id="action-detail-badge" class="text-xs font-black uppercase tracking-wider bg-white/20 px-2.5 py-1 rounded-md">ODS 1</span>
+                    <h3 id="action-detail-ods-title" class="text-xl font-black mt-1">Erradicação da Pobreza</h3>
+                </div>
+                <div class="bg-white/20 p-3 rounded-2xl backdrop-blur-sm border border-white/30 flex items-center justify-center shrink-0">
+                    <i id="action-detail-icon" class="ph-fill ph-users-three text-4xl text-white"></i>
+                </div>
+            </div>
+
+            <!-- Mission Details Card -->
+            <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border-2 border-slate-100 space-y-5">
+                <div class="flex items-start space-x-3.5">
+                    <div id="action-detail-num" class="w-9 h-9 rounded-full text-white font-black flex items-center justify-center text-base shrink-0 mt-0.5 shadow-sm">
+                        1
+                    </div>
+                    <div>
+                        <h3 id="action-detail-title" class="text-base sm:text-lg font-black text-slate-900 leading-snug">Apoio direto</h3>
+                        <p id="action-detail-desc" class="text-xs sm:text-sm text-slate-600 font-medium mt-1 leading-relaxed">
+                            Compre um item (como um pano de prato ou doce) de um vendedor autônomo na rua.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Importance Box -->
+                <div id="action-detail-imp-box" class="rounded-2xl p-4 flex items-start space-x-3.5 border border-rose-100 bg-rose-50/50">
+                    <div id="action-detail-imp-icon" class="w-9 h-9 rounded-full text-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm bg-rose-600">
+                        <i class="ph-bold ph-target text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-xs sm:text-sm font-black text-rose-950">Por que essa atitude importa?</h4>
+                        <p id="action-detail-impact" class="text-xs text-rose-900 font-medium mt-0.5 leading-relaxed">
+                            Valoriza o trabalho autônomo e gera renda imediata para quem precisa.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Timeline & Reward Badges -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div class="bg-sky-50/80 border border-sky-100 rounded-2xl p-4 flex items-center space-x-3.5">
+                        <i class="ph-bold ph-calendar-blank text-2xl text-sky-700"></i>
+                        <div>
+                            <p class="text-[10px] text-sky-800 font-extrabold uppercase">Prazo para execução</p>
+                            <p class="text-sm font-black text-sky-950 mt-0.5">Hoje / 7 dias</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-amber-50/80 border border-amber-200/80 rounded-2xl p-4 flex items-center space-x-3.5">
+                        <i class="ph-fill ph-coins text-2xl text-amber-500"></i>
+                        <div>
+                            <p class="text-[10px] text-amber-800 font-extrabold uppercase">Recompensa</p>
+                            <p class="text-sm font-black text-amber-950 mt-0.5">+ 50 moedas</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Proof Instructions -->
+                <div class="bg-slate-50 border border-slate-200/80 rounded-2xl p-4 flex items-center space-x-3.5">
+                    <i class="ph-bold ph-file-text text-2xl text-slate-700 shrink-0"></i>
+                    <div>
+                        <h5 class="text-xs font-black text-slate-900">Como comprovar?</h5>
+                        <p class="text-xs text-slate-600 font-medium mt-0.5">Anexe uma foto, vídeo ou áudio mostrando a execução da sua atitude prática.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button id="btn-action-upload" onclick="navigateTo('view-action-upload')" class="w-full duo-btn-3d text-white font-black py-4 rounded-2xl shadow-lg transition-all flex items-center justify-center space-x-2 text-base sm:text-lg min-h-[52px]">
+                <span>Enviar comprovação</span>
+                <i class="ph-bold ph-upload-simple text-xl"></i>
+            </button>
+        </section>
+
+        <!-- TELA 4: ANEXAR E ENVIAR COMPROVAÇÃO -->
+        <section id="view-action-upload" class="app-view hidden-view min-h-full p-2 sm:p-4 md:p-6 max-w-2xl mx-auto space-y-4">
+            <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border-2 border-slate-100 space-y-5">
+                <!-- Instruction Header -->
+                <div class="bg-rose-50/60 border border-rose-200/80 rounded-2xl p-4 flex items-center space-x-3.5">
+                    <i class="ph-bold ph-file-text text-2xl text-rose-600 shrink-0"></i>
+                    <div>
+                        <h4 class="text-sm font-black text-rose-950">Sua comprovação</h4>
+                        <p class="text-xs text-rose-900 font-medium mt-0.5 leading-relaxed">
+                            Anexe uma foto, vídeo ou áudio do seu dispositivo mostrando a realização da sua atitude prática.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Dotted File Selection Area -->
+                <div class="space-y-2">
+                    <label class="text-xs sm:text-sm font-black text-slate-800">Selecione o arquivo de comprovação</label>
+                    <label for="proof-file-input" class="w-full border-2 border-dashed border-rose-300 bg-rose-50/20 rounded-3xl p-8 flex flex-col items-center justify-center cursor-pointer hover:bg-rose-50/40 transition-all text-center group">
+                        <div class="w-14 h-14 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                            <i class="ph-bold ph-cloud-arrow-up text-3xl"></i>
+                        </div>
+                        <span class="text-sm sm:text-base font-black text-rose-700">Clique aqui para escolher um arquivo</span>
+                        <span class="text-[11px] font-semibold text-slate-400 mt-1">Suporta Imagens (PNG, JPG), Vídeos (MP4) ou Áudios (MP3, WAV)</span>
+                        <input type="file" id="proof-file-input" accept="image/*,video/*,audio/*" class="hidden" onchange="handleFileSelection(event)">
+                    </label>
+                </div>
+
+                <!-- Selected File Preview Badge -->
+                <div id="file-preview-card" class="hidden-view p-3 bg-slate-100 rounded-2xl flex items-center justify-between border border-slate-200">
+                    <div class="flex items-center space-x-2.5 min-w-0">
+                        <i class="ph-fill ph-check-circle text-emerald-600 text-xl shrink-0"></i>
+                        <span id="preview-file-name" class="text-xs font-black text-slate-800 truncate">arquivo.jpg</span>
+                    </div>
+                    <span class="text-[10px] font-black uppercase text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-md shrink-0">Pronto</span>
+                </div>
+
+                <!-- Media Preview elements -->
+                <img id="upload-preview-img" class="hidden w-full max-h-48 object-cover rounded-2xl border border-slate-200">
+                <video id="upload-preview-video" controls class="hidden w-full max-h-48 rounded-2xl border border-slate-200"></video>
+                <audio id="upload-preview-audio" controls class="hidden w-full"></audio>
+
+                <!-- Optional Comment Input -->
+                <div class="space-y-1.5">
+                    <label class="text-xs sm:text-sm font-black text-slate-800">Adicionar um comentário (opcional)</label>
+                    <textarea id="upload-comment-text" rows="3" placeholder="Descreva brevemente como foi a sua experiência..." 
+                              class="w-full bg-slate-50 border-2 border-slate-200 rounded-2xl p-3.5 text-xs sm:text-sm font-semibold text-slate-800 focus:outline-none focus:border-brand-blue"></textarea>
+                </div>
+            </div>
+
+            <!-- Submit for Analysis Button -->
+            <button id="btn-submit-analysis" onclick="submitEvidence()" class="w-full duo-btn-3d bg-rose-600 border-b-rose-800 hover:bg-rose-700 text-white font-black py-4 rounded-2xl shadow-lg transition-all flex items-center justify-center space-x-2 text-base sm:text-lg min-h-[52px]">
+                <span>Enviar para Análise</span>
+                <i class="ph-bold ph-paper-plane-right text-xl"></i>
+            </button>
+        </section>
+
+        <!-- TELA 5: AGUARDE DA RESOLUÇÃO E LIBERAÇÃO DO SELO/CERTIFICADO -->
+        <section id="view-analysis" class="app-view hidden-view min-h-full p-2 sm:p-4 md:p-6 max-w-2xl mx-auto space-y-5">
+            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border-2 border-slate-100 text-center space-y-4">
+                <!-- Mascot Bebbee Avatar with Magnifying Glass Badge -->
+                <div class="relative w-24 h-24 sm:w-28 sm:h-28 mx-auto">
+                    <div class="w-full h-full rounded-full bg-amber-400 border-4 border-amber-100 flex items-center justify-center text-amber-950 font-black shadow-md overflow-hidden">
+                        <span class="text-sm font-black">Bebbee</span>
+                    </div>
+                    <div class="absolute bottom-0 right-0 w-9 h-9 rounded-full bg-brand-navy border-2 border-white text-white flex items-center justify-center shadow">
+                        <i class="ph-bold ph-magnifying-glass text-lg"></i>
+                    </div>
+                </div>
+
+                <h3 class="text-2xl sm:text-3xl font-black text-slate-900">Sua atitude está sendo analisada!</h3>
+
+                <p class="text-xs sm:text-sm text-slate-600 font-semibold max-w-md mx-auto leading-relaxed">
+                    Recebemos sua comprovação e a Bebbee e nossa equipe já vão conferir se tudo está certinho para conceder o selo correspondente!
+                </p>
+            </div>
+
+            <!-- View My Profile Button -->
+            <button onclick="navigateTo('view-profile')" class="w-full duo-btn-3d bg-brand-navy border-b-slate-900 text-white font-black py-4 rounded-2xl shadow-lg transition-all flex items-center justify-center space-x-2 text-base sm:text-lg min-h-[52px]">
+                <span>Ver Meu Perfil</span>
+                <i class="ph-bold ph-user text-xl"></i>
+            </button>
+        </section>
+
+        <!-- SCREEN 14: MEU PERFIL -->
+        <section id="view-profile" class="app-view hidden-view min-h-full p-2 sm:p-4 md:p-6 max-w-2xl mx-auto space-y-4">
+            <div class="flex items-center justify-between pb-2 border-b-2 border-slate-200">
+                <div class="w-6"></div>
+                <h2 class="text-sm sm:text-base font-black text-slate-800">Meu Perfil</h2>
+                <div class="w-6"></div>
+            </div>
+
+            <div class="bg-white rounded-3xl p-4 sm:p-5 shadow-sm border-2 border-slate-100 space-y-4">
+                <div class="flex items-center space-x-3 sm:space-x-4">
+                    <div id="img-profile-avatar" class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-brand-blue text-white flex items-center justify-center text-2xl sm:text-3xl font-black border-4 border-sky-100 shadow shrink-0">
+                        N
+                    </div>
+
+                    <div class="space-y-1 flex-1 min-w-0">
+                        <div class="flex items-center space-x-2">
+                            <h3 class="text-lg sm:text-xl font-black text-slate-800 truncate" id="lbl-profile-name">Novo Usuário</h3>
+                            <button id="btn-edit-username" type="button" onclick="openEditModal()" class="p-1.5 sm:p-2 text-brand-blue hover:bg-slate-100 rounded-full transition-colors flex items-center justify-center border border-slate-200 shadow-sm cursor-pointer shrink-0" title="Modificar nome de usuário">
+                                <i class="ph-bold ph-pencil-simple text-base sm:text-lg"></i>
+                            </button>
+                        </div>
+
+                        <div class="flex flex-wrap gap-1.5 pt-1" id="profile-badges-header">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div class="bg-slate-100/80 border-2 border-slate-200 rounded-2xl p-3 sm:p-3.5 flex items-center space-x-3 shadow-sm">
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-brand-navy text-white flex items-center justify-center shrink-0 shadow">
+                            <i class="ph-fill ph-coins text-xl sm:text-2xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-[9px] sm:text-[10px] font-black text-brand-navy uppercase tracking-wider">Moedas Acumuladas</p>
+                            <p class="text-lg sm:text-xl font-black text-brand-navy" id="profile-coins-display">0 moedas</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-100/80 border-2 border-slate-200 rounded-2xl p-3 sm:p-3.5 flex items-center space-x-3 shadow-sm">
+                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-brand-navy text-white flex items-center justify-center shrink-0 shadow">
+                            <i class="ph-fill ph-chart-line-up text-xl sm:text-2xl"></i>
+                        </div>
+                        <div class="flex-1 min-w-0 space-y-1">
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="font-extrabold text-brand-navy truncate">Impacto Social</span>
+                                <span class="font-black text-brand-navy shrink-0 ml-1 text-[11px] sm:text-xs" id="profile-impact-text">0 / 1000 pts</span>
+                            </div>
+                            <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
+                                <div id="profile-impact-bar" class="bg-brand-navy h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-2 border-t border-slate-100 space-y-3">
+                    <h4 class="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center">
+                        <i class="ph-fill ph-seal-check text-amber-500 text-base sm:text-lg mr-1.5"></i>
+                        Selos & Conquistas Desbloqueadas
+                    </h4>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5" id="profile-badges-grid">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCREEN 15: GABARITO COMENTADO -->
+        <section id="view-gabarito" class="app-view hidden-view min-h-full p-2 sm:p-4 md:p-6 max-w-2xl mx-auto space-y-4">
+            <div class="flex items-center justify-between pb-2 border-b-2 border-slate-200">
+                <button onclick="navigateTo('view-gd-results')" class="text-slate-700 hover:text-slate-900 font-bold text-lg p-1">
+                    <i class="ph-bold ph-caret-left text-2xl text-brand-blue"></i>
+                </button>
+                <h2 class="text-base sm:text-lg font-black text-brand-blue">Gabarito comentado</h2>
+                <button class="text-rose-500 hover:text-rose-700 p-1">
+                    <i class="ph-bold ph-heart text-2xl"></i>
+                </button>
+            </div>
+
+            <!-- List of Questions with Detailed Review -->
+            <div id="gabarito-list-container" class="space-y-4">
+                <!-- Gerado via JS -->
+            </div>
+
+            <!-- Recompensa Final com Mascote -->
+            <div class="bg-sky-50/90 border-2 border-sky-200 rounded-3xl p-4 sm:p-5 flex items-center justify-between shadow-sm relative overflow-hidden">
+                <div class="flex items-center space-x-3.5 z-10">
+                    <div class="w-14 h-14 rounded-2xl bg-amber-400 border-2 border-amber-300 shadow-md flex items-center justify-center shrink-0">
+                        <svg viewBox="0 0 100 100" class="w-10 h-10">
+                            <ellipse cx="50" cy="50" rx="30" ry="38" fill="#F59E0B"/>
+                            <circle cx="40" cy="40" r="4" fill="#1E293B"/>
+                            <circle cx="60" cy="40" r="4" fill="#1E293B"/>
+                            <path d="M 35 52 Q 50 62 65 52" fill="none" stroke="#1E293B" stroke-width="3.5"/>
+                            <rect x="18" y="28" width="10" height="18" rx="5" fill="#1E293B"/>
+                            <rect x="72" y="28" width="10" height="18" rx="5" fill="#1E293B"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="text-base sm:text-lg font-black text-brand-blue leading-tight">Você ganhou<br><span class="text-amber-500">50 moedas!</span></h4>
+                        <p class="text-[11px] font-bold text-slate-500 mt-1">Continue aprendendo e resgatando recompensas no Marketplace.</p>
+                    </div>
+                </div>
+                <div class="w-12 h-12 rounded-full bg-amber-400/20 flex items-center justify-center shrink-0 z-10 border border-amber-300">
+                    <i class="ph-fill ph-coins text-2xl text-amber-500"></i>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // --- GLOBAL USER STATE ---
+        let userState = {
+            username: 'Novo Usuário',
+            activeOdsId: 1,
+            coins: 0,
+            odsProgress: {}
+        };
+
+        const odsHexColors = {
+            1: '#E5243B', 2: '#DDA835', 3: '#4C9F38', 4: '#C5192D',
+            5: '#FF3A21', 6: '#26BDE2', 7: '#FCC30B', 8: '#A21942',
+            9: '#FD6925', 10: '#DD1367', 11: '#FD9D24', 12: '#BF8B2E',
+            13: '#3F7E44', 14: '#0A97D9', 15: '#56C02B', 16: '#00689D',
+            17: '#19486A', 18: '#003366'
+        };
+
+        function getOdsIconClass(id) {
+            const icons = {
+                1: 'ph-users-three', 2: 'ph-bowl-food', 3: 'ph-heartbeat', 4: 'ph-student',
+                5: 'ph-gender-intersex', 6: 'ph-drop', 7: 'ph-sun-dim', 8: 'ph-chart-line-up',
+                9: 'ph-buildings', 10: 'ph-equals', 11: 'ph-city', 12: 'ph-arrows-counter-clockwise',
+                13: 'ph-globe-hemisphere-west', 14: 'ph-fish', 15: 'ph-tree', 16: 'ph-scales',
+                17: 'ph-handshake', 18: 'ph-users-four'
+            };
+            return icons[id] || 'ph-target';
+        }
+
+        // Expanded full catalog with complete theory, photos, questions and actions for ALL 18 ODS
+        const odsList = [
+            {
+                id: 1,
+                title: 'Erradicação da Pobreza',
+                theory: 'A pobreza extrema vai muito além da escassez de recursos financeiros. Ela se manifesta de forma complexa na falta de moradia digna, na insegurança alimentar, no transporte público ineficiente e na exclusão digital. Erradicar a pobreza em todas as suas formas exige redes de proteção social comunitárias, fortalecimento de pequenos produtores locais e políticas de inclusão produtiva que permitam às famílias vulneráveis romperem o ciclo histórico de vulnerabilidade socioeconômica.',
+                importance: 'Apoiar o microempreendedorismo de bairro, valorizar vendedores autônomos e promover mutirões comunitários geram renda direta, fortalecem a economia circular local e constroem uma rede de solidariedade no seu próprio entorno.',
+                photo: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=800&q=80',
+                caption: 'Feiras comunitárias e apoio ao comércio local geram autonomia financeira.',
+                simpleQuestions: [
+                    {
+                        q: 'Um pequeno comerciante da sua rua está prestes a fechar a loja por falta de clientes. Qual atitude diária ajuda a reverter essa vulnerabilidade?',
+                        opts: ['Dar preferência para comprar produtos em feiras, bazares e autônomos do seu bairro', 'Comprar unicamente em multinacionais por e-commerce estrangeiro', 'Pedir descontos excessivos até o comerciante não ter lucro', 'Evitar indicar serviços de pessoas da sua vizinhança'],
+                        correctIdx: 0,
+                        explanation: 'Comprar do comércio local e divulgar autônomos gera renda direta e imediata para famílias da comunidade.'
+                    },
+                    {
+                        q: 'A ausência de documentação básica impede que moradores de uma ocupação urbana consigam empregos formais. Como agir coletivamente?',
+                        opts: ['Ignorar o problema pois não nos afeta diretamente', 'Promover mutirões comunitários com cartórios para emissão gratuita de RG e CPF', 'Cobrar taxas elevadas dos moradores em vulnerabilidade', 'Dificultar o acesso das famílias aos serviços sociais'],
+                        correctIdx: 1,
+                        explanation: 'A documentação civil é a porta de entrada para a cidadania, emprego formal e programas de proteção social.'
+                    },
+                    {
+                        q: 'Durante o inverno, famílias em situação de rua enfrentam frio rigoroso sem agasalhos. Qual microação rápida traz alívio imediato?',
+                        opts: ['Separar casacos e mantas em bom estado para doação em pontos de arrecadação', 'Guardar roupas sem uso no armário até estragarem', 'Descartar agasalhos bons no lixo comum', 'Vender agasalhos velhos por preços altos'],
+                        correctIdx: 0,
+                        explanation: 'A doação consciente de roupas aquece vidas e fortalece a rede de solidariedade comunitária.'
+                    }
+                ],
+                gdQuestions: [
+                    {
+                        q: 'A ausência de documentação básica impede o trabalho formal. Quais medidas resolvem este obstáculo de forma duradoura?',
+                        opts: ['Promover mutirões comunitários para emissão gratuita de RG e CPF', 'Disponibilizar orientação jurídica gratuita sobre registro civil', 'Exigir pagamento de taxas altas para atendimento básico', 'Ampliar parcerias entre associações de bairro e cartórios públicos'],
+                        correctIndices: [0, 1, 3],
+                        explanation: 'Mutirões gratuitos, orientação jurídica e parcerias com cartórios garantem acesso universal ao registro civil.'
+                    },
+                    {
+                        q: 'Quais estratégias comunitárias estimulam a geração de renda sem depender do mercado corporativo tradicional?',
+                        opts: ['Criar bancos comunitários e moedas sociais locais', 'Formar cooperativas de produção artesanal e reciclagem', 'Incentivar o monopólio de grandes empresas', 'Realizar feiras de troca e consumo solidário'],
+                        correctIndices: [0, 1, 3],
+                        explanation: 'Moedas locais, cooperativas e feiras solidárias mantêm o valor circulando dentro da comunidade.'
+                    },
+                    {
+                        q: 'Como os jovens podem atuar para combater a vulnerabilidade social no seu entorno?',
+                        opts: ['Mapear famílias necessitadas para conectar com redes de apoio', 'Oferecer reforço escolar gratuito para crianças da periferia', 'Depreciar o trabalho informal de vendedores de rua', 'Divulgar pequenos negócios de moradores nas redes sociais'],
+                        correctIndices: [0, 1, 3],
+                        explanation: 'Mapeamento solidário, aulas comunitárias e divulgação nas redes impulsionam a igualdade de oportunidades.'
+                    },
+                    {
+                        q: 'A insegurança habitacional afeta milhões. Quais atitudes apoiam o direito à moradia digna?',
+                        opts: ['Apoiar projetos comunitários de mutirão de reforma residencial', 'Defender a implementação de saneamento básico em periferias', 'Denunciar condições insalubres de moradia às autoridades públicas', 'Expulsar moradores vulneráveis de áreas comunitárias'],
+                        correctIndices: [0, 1, 2],
+                        explanation: 'Mutirões de reforma, saneamento e denúncia de insalubridade garantem condições dignas de habitação.'
+                    },
+                    {
+                        q: 'Quais ações previnem a exclusão econômica de jovens no início da carreira?',
+                        opts: ['Oferecer oficinas de capacitação profissional e liderança', 'Criar redes de mentoria entre profissionais experientes e jovens', 'Cobrar mensalidades caríssimas por cursos básicos de qualificação', 'Disponibilizar acesso livre a computadores e internet comunitária'],
+                        correctIndices: [0, 1, 3],
+                        explanation: 'Capacitação gratuita, mentoria e acesso à internet conectam jovens ao primeiro emprego e empreendedorismo.'
+                    }
+                ],
+                actions: [
+                    { title: 'Apoio Direto', desc: 'Compre um item de um vendedor autônomo da sua rua.', impact: 'Valoriza o trabalho autônomo e gera renda imediata para quem precisa.' },
+                    { title: 'Desapego de Calçados', desc: 'Separe um par de sapatos confortáveis que sobram no seu armário para doação.', impact: 'Garante conforto e proteção para pessoas em situação de vulnerabilidade.' }
+                ]
+            }
+        ];
+
+        // Fill remaining ODSs (2 to 18) with targeted high-resolution images, theories and contextualized questions
+        (function generateFullCatalog() {
+            const odsMeta = [
+                { 
+                    id: 2, 
+                    title: 'Fome Zero e Agricultura Sustentável', 
+                    photo: 'https://images.unsplash.com/photo-1595855759920-86582396756a?auto=format&fit=crop&w=800&q=80', 
+                    caption: 'Hortas comunitárias promovem segurança alimentar urbana.', 
+                    theory: 'A fome não decorre apenas da falta global de alimentos, mas sim da má distribuição, do desperdício nas cadeias de suprimento e da perda do acesso à terra e à renda. O ODS 2 busca erradicar a fome e todas as formas de desnutrição, promovendo a agricultura familiar orgânica, o cultivo agroecológico e a criação de redes urbanas de abastecimento saudável.', 
+                    imp: 'Incentivar hortas comunitárias na escola ou no bairro, evitar o desperdício doméstico de comida e apoiar feiras orgânicas garantem alimento saudável e acessível para quem mais precisa.' 
+                },
+                { 
+                    id: 3, 
+                    title: 'Saúde e Bem-Estar', 
+                    photo: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=800&q=80', 
+                    caption: 'Atividade física e saúde mental fortalecem o bem-estar coletivo.', 
+                    theory: 'Garantir uma vida saudável para todas as idades exige olhar integrado para o acesso à saúde pública de qualidade, prevenção de doenças transmissíveis e crônicas, cuidados com a saúde mental na juventude e erradicação de focos de contaminação ambiental que afetam a saúde coletiva.', 
+                    imp: 'Praticar esportes comunitários, cuidar do bem-estar emocional de amigos e combater o acúmulo de água parada prevenindo arboviroses (como Dengue e Zika) protegem a saúde de todos ao seu redor.' 
+                },
+                { 
+                    id: 4, 
+                    title: 'Educação de Qualidade', 
+                    photo: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=800&q=80', 
+                    caption: 'Acesso à leitura e tecnologia transforma o futuro de estudantes.', 
+                    theory: 'Uma educação verdadeiramente inclusiva, equitativa e de qualidade é a ferramenta mais poderosa para a transformação social. O ODS 4 visa assegurar que todas as crianças, jovens e adultos tenham acesso a aprendizados significativos, infraestrutura escolar adequada e capacitação para a cidadania crítica e o trabalho digno.', 
+                    imp: 'Compartilhar livros, oferecer reforço escolar voluntário para colegas do bairro e participar de grêmios ou conselhos escolares fortalecem o ensino público do seu município.' 
+                },
+                { 
+                    id: 5, 
+                    title: 'Igualdade de Gênero', 
+                    photo: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=80', 
+                    caption: 'Liderança e equidade para mulheres constroem uma sociedade justa.', 
+                    theory: 'Alcançar a igualdade de gênero requer a eliminação de todas as formas de discriminação, violência, assédio e sobrecarga de trabalho não remunerado contra mulheres e meninas. O objetivo garante a liderança plena das mulheres na política, na ciência, na economia e no espaço comunitário.', 
+                    imp: 'Dividir igualmente as tarefas domésticas no lar, combater piadas e atitudes machistas no cotidiano e incentivar a liderança feminina nas escolas e empresas constroem respeito e oportunidade real.' 
+                },
+                { 
+                    id: 6, 
+                    title: 'Água Potável e Saneamento', 
+                    photo: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=800&q=80', 
+                    caption: 'A preservação dos mananciais garante água limpa para o futuro.', 
+                    theory: 'O acesso universal à água potável e ao saneamento básico é um direito humano essencial. A contaminação de nascentes, o esgoto sem tratamento despejado nos rios e a poluição química ameaçam a saúde pública, o abastecimento das cidades e a biodiversidade dos ecossistemas aquáticos.', 
+                    imp: 'Economizar água nas tarefas diárias, nunca descartar óleo de cozinha no ralo e exigir o saneamento básico para comunidades periféricas evitam a poluição de nossas fontes de vida.' 
+                },
+                { 
+                    id: 7, 
+                    title: 'Energia Limpa e Acessível', 
+                    photo: 'https://images.unsplash.com/photo-1509391365360-2e959784a276?auto=format&fit=crop&w=800&q=80', 
+                    caption: 'Energia solar e eólica impulsionam a transição sustentável.', 
+                    theory: 'A transição energética das fontes fósseis (carvão e petróleo) para matrizes limpas e renováveis (solar, eólica e biomassa) é urgente. O ODS 7 busca garantir acesso a uma energia confiável, moderna, sustentável e financeiramente acessível para toda a população.', 
+                    imp: 'Reduzir o consumo desnecessário de eletricidade, aproveitar a iluminação natural e apoiar a instalação de energia solar comunitária diminuem os impactos da emergência climática.' 
+                },
+                { 
+                    id: 8, 
+                    title: 'Trabalho Decente e Crescimento Econômico', 
+                    photo: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=800&q=80', 
+                    caption: 'Trabalho formal e condições éticas geram desenvolvimento sustentável.', 
+                    theory: 'Crescimento econômico só é verdadeiramente sustentável quando acompanhado de empregos dignos, proteção aos direitos trabalhistas, remuneração justa e ambientes seguros. Este objetivo combate rigorosamente o trabalho infantil, o trabalho análogo à escravidão e a precarização profissional de jovens.', 
+                    imp: 'Consumir de empresas que respeitam seus trabalhadores, apoiar leis de proteção social ao jovem aprendiz e incentivar o empreendedorismo ético geram prosperidade comunitária.' 
+                },
+                { 
+                    id: 9, 
+                    title: 'Indústria, Inovação e Infraestrutura', 
+                    photo: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80', 
+                    caption: 'Inovação e infraestrutura sustentável modernizam os bairros.', 
+                    theory: 'Construir infraestruturas resilientes e sustentáveis impulsiona a inclusão econômica e a inovação tecnológica. O ODS 9 incentiva a modernização industrial com responsabilidade socioambiental, a democratização da internet e o desenvolvimento de tecnologias sociais adaptadas à realidade periférica.', 
+                    imp: 'Participar de laboratórios maker nas escolas, criar soluções digitais para desafios de mobilidade no seu bairro e valorizar inovações ecológicas impulsionam o progresso da cidade.' 
+                },
+                { 
+                    id: 10, 
+                    title: 'Redução das Desigualdades', 
+                    photo: 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=800&q=80', 
+                    caption: 'Inclusão e acessibilidade asseguram oportunidades iguais a todos.', 
+                    theory: 'A desigualdade socioeconômica, de raça, gênero, orientação sexual e acessibilidade física enfraquece a coesão social. O ODS 10 trabalha para garantir a inclusão política, financeira e social de pessoas historicamente marginalizadas, garantindo representatividade e distribuição equitativa de oportunidades.', 
+                    imp: 'Garantir que espaços públicos e digitais sejam acessíveis a pessoas com deficiência, denunciar atitudes preconceituosas e defender políticas de equidade acolhem e integram todos os cidadãos.' 
+                },
+                { 
+                    id: 11, 
+                    title: 'Cidades e Comunidades Sustentáveis', 
+                    photo: 'https://images.unsplash.com/photo-1477959858617-67f30ac4ce78?auto=format&fit=crop&w=800&q=80', 
+                    caption: 'Praças arborizadas e transporte limpo transformam a vida urbana.', 
+                    theory: 'Transformar cidades em espaços inclusivos e seguros exige planejamento urbano centrado nas pessoas. Isso abrange moradia digna com infraestrutura básica, mobilidade urbana ativa e pública eficiente, redução de riscos de desastres naturais e preservação do patrimônio cultural e das áreas verdes.', 
+                    imp: 'Dar preferência ao transporte ativo (caminhada, bicicleta) e público, revitalizar praças comunitárias e respeitar o patrimônio público tornam o bairro mais seguro e sustentável.' 
+                },
+                { 
+                    id: 12, 
+                    title: 'Consumo e Produção Responsáveis', 
+                    photo: 'https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&w=800&q=80', 
+                    caption: 'Reduzir, reutilizar e reciclar minimizam a geração de lixo.', 
+                    theory: 'O modelo linear de "extrair, produzir, descartar" está esgotando os recursos do planeta. O ODS 12 incentiva a economia circular, reduzindo drasticamente a pegada ecológica por meio da reciclagem, da redução do desperdício de alimentos, do descarte correto de resíduos perigosos e da responsabilidade corporativa.', 
+                    imp: 'Recusar plásticos de uso único, separar o lixo reciclável para catadores, compostar resíduos orgânicos e praticar o consumo consciente reduzem o volume enviado aos aterros.' 
+                },
+                { 
+                    id: 13, 
+                    title: 'Ação Contra a Mudança Global do Clima', 
+                    photo: 'https://images.unsplash.com/photo-1611273426858-450d8e3c9fce?auto=format&fit=crop&w=800&q=80', 
+                    caption: 'Ações urgentes preservam o equilíbrio do clima global.', 
+                    theory: 'A emergência climática se manifesta em ondas de calor extremo, tempestades intensas, secas prolongadas e elevação do nível do mar. Este objetivo exige medidas de urgência para cortar as emissões de carbono, fortalecer a resiliência das cidades vulneráveis e promover a educação ambiental em larga escala.', 
+                    imp: 'Plantar árvores nativas, economizar combustível e pressionar por políticas climáticas locais combatem o aquecimento global e protegem as populações mais afetadas.' 
+                },
+                { 
+                    id: 14, 
+                    title: 'Vida na Água', 
+                    photo: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=800&q=80', 
+                    caption: 'Oceanos limpos protegem a biodiversidade marinha.', 
+                    theory: 'Os oceanos absorvem grande parte do gás carbônico e produzem mais da metade do oxigênio da Terra. No entanto, a poluição por plásticos, o despejo de efluentes sem tratamento e a pesca predatória estão destruindo os ecossistemas marinhos, corais e espécimes da fauna aquática.', 
+                    imp: 'Evitar que o lixo plástico seja descartado nas ruas ou rios, participar de mutirões de limpeza de praias e margens fluviais e consumir frutos do mar de pesca sustentável preservam os oceanos.' 
+                },
+                { 
+                    id: 15, 
+                    title: 'Vida Terrestre', 
+                    photo: 'https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=800&q=80', 
+                    caption: 'Proteger florestas preserva o habitat de milhares de espécies.', 
+                    theory: 'A proteção da biodiversidade terrestre e das florestas é vital para a regulação do clima e da vida. O ODS 15 combate o desmatamento, a degradação dos solos, a desertificação e a perda da fauna e flora nativas, protegendo espécies ameaçadas de extinção.', 
+                    imp: 'Proteger a vegetação nativa do seu bairro, combater o descarte inadequado de lixo em áreas verdes e apoiar a restauração ecológica protegem a fauna local e a qualidade do solo.' 
+                },
+                { 
+                    id: 16, 
+                    title: 'Paz, Justiça e Instituições Eficazes', 
+                    photo: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=800&q=80', 
+                    caption: 'O diálogo e a transparência são pilares da justiça social.', 
+                    theory: 'Sociedades pacíficas, seguras e inclusivas dependem do acesso equitativo à justiça e de instituições públicas éticas e transparentes. O objetivo combate todas as formas de violência, corrupção, exploração de vulneráveis e abuso de poder, fortalecendo os canais de controle social e participação cidadã.', 
+                    imp: 'Resolver conflitos por meio do diálogo pacífico e empático, denunciar arbitrariedades e acompanhar as contas e conselhos públicos do município fortalecem a democracia e a cidadania.' 
+                },
+                { 
+                    id: 17, 
+                    title: 'Parcerias e Meios de Implementação', 
+                    photo: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=800&q=80', 
+                    caption: 'União de esforços potencializa projetos de impacto social.', 
+                    theory: 'A Agenda 2030 só se concretizará se houver forte cooperação entre governos, setor privado, universidades e sociedade civil. O ODS 17 busca reforçar a mobilização de recursos, a transferência de tecnologias sociais e as alianças estratégicas para alcançar todos os objetivos do desenvolvimento sustentável.', 
+                    imp: 'Conectar grêmios estudantis, coletivos culturais, feirantes e associações de bairro em projetos conjuntos potencializa os resultados socioambientais da sua comunidade.' 
+                },
+                { 
+                    id: 18, 
+                    title: 'Igualdade Étnico-Racial', 
+                    photo: 'https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?auto=format&fit=crop&w=800&q=80', 
+                    caption: 'Valorizar a diversidade cultural constrói equidade étnico-racial.', 
+                    theory: 'O ODS 18 combate o racismo estrutural e institucional que atinge historicamente populações negras, indígenas e povos tradicionais no Brasil. O objetivo exige ações afirmativas, igualdade de acesso a direitos básicos, valorização da memória e proteção das sabedorias ancestryis.', 
+                    imp: 'Consumir de afroempreendedores e pequenos produtores indígenas, combater o racismo no cotidiano e estudar a história e literatura afro-brasileira constroem uma sociedade verdadeiramente justa.' 
+                }
+            ];
+
+            for (let i = 2; i <= 18; i++) {
+                const meta = odsMeta.find(m => m.id === i);
+                odsList.push({
+                    id: i,
+                    title: meta.title,
+                    theory: meta.theory,
+                    importance: meta.imp,
+                    photo: meta.photo,
+                    caption: meta.caption,
+                    simpleQuestions: [
+                        {
+                            q: `Na sua escola ou bairro, qual atitude prática relacionada ao ${meta.title} gera maior transformação no cotidiano?`,
+                            opts: [
+                                `Mobilizar colegas para criar um projeto comunitário focado em ${meta.title}`,
+                                `Esperar que órgãos públicos externos resolvam todos os problemas locais sem participação dos moradores`,
+                                `Ignorar o impacto das ações individuais sobre a qualidade de vida da vizinhança`,
+                                `Criticar iniciativas sustentáveis sem propor soluções reais`
+                            ],
+                            correctIdx: 0,
+                            explanation: `Iniciativas comunitárias e escolares ativas mobilizam a comunidade e trazem resultados imediatos para o ${meta.title}.`
+                        },
+                        {
+                            q: `Como os estudantes e jovens podem utilizar a tecnologia e redes sociais a favor do ${meta.title}?`,
+                            opts: [
+                                `Criando campanhas informativas sobre consumo consciente, direitos e soluções para o ${meta.title}`,
+                                `Compartilhando informações não checadas sobre questões ambientais e sociais`,
+                                `Utilizando redes sociais apenas para entretenimento sem abordar causas coletivas`,
+                                `Desqualificando atitudes sustentáveis desenvolvidas por coletivos jovens`
+                            ],
+                            correctIdx: 0,
+                            explanation: `O uso consciente da tecnologia e das redes sociais amplia a conscientização e multiplica o alcance do ${meta.title}.`
+                        },
+                        {
+                            q: `Qual destas escolhas diárias combate diretamente o desperdício e fortalece o ${meta.title}?`,
+                            opts: [
+                                `Dar preferência a produtos sustentáveis, reaproveitar recursos e valorizar iniciativas locais`,
+                                `Descartar materiais utilizáveis no lixo comum diariamente`,
+                                `Comprar produtos sem verificar a origem ética ou o impacto ambiental de sua produção`,
+                                `Consumir recursos naturais de forma desmedida sem pensar nas próximas gerações`
+                            ],
+                            correctIdx: 0,
+                            explanation: `O consumo consciente diário preserva recursos naturais e impulsiona a economia sustentável na comunidade.`
+                        }
+                    ],
+                    gdQuestions: [
+                        {
+                            q: `Quais destas ações práticas aceleram o cumprimento do ${meta.title} no ambiente escolar e comunitário?`,
+                            opts: [
+                                `Organizar oficinas de capacitação e troca de saberes entre os moradores do bairro`,
+                                `Implementar projetos práticos de uso racional de recursos na escola ou no condomínio`,
+                                `Incentivar o descarte irregular de resíduos em áreas públicas desocupadas`,
+                                `Formar parcerias entre feirantes locais, estudantes e associações de moradores`
+                            ],
+                            correctIndices: [0, 1, 3],
+                            explanation: `Oficinas, projetos de uso racional e parcerias locais unem a comunidade em prol da sustentabilidade.`
+                        },
+                        {
+                            q: `Como a comunidade pode monitorar e apoiar políticas públicas voltadas ao ${meta.title}?`,
+                            opts: [
+                                `Participando ativamente de conselhos comunitários e reuniões de orçamento participativo`,
+                                `Desenvolvendo projetos de mapeamento colaborativo dos problemas do bairro`,
+                                `Ignorar os canais de ouvidoria e participação social disponíveis no município`,
+                                `Acompanhar e fiscalizar a aplicação dos recursos públicos destinados a melhorias sociais`
+                            ],
+                            correctIndices: [0, 1, 3],
+                            explanation: `Participação em conselhos, mapeamento comunitário e fiscalização cidadã garantem a eficácia dos investimentos públicos.`
+                        },
+                        {
+                            q: `Quais comportamentos individuais reforçam a responsabilidade socioambiental vinculada ao ${meta.title}?`,
+                            opts: [
+                                `Reduzir a geração de lixo através dos princípios de recusar, reduzir, reutilizar e reciclar`,
+                                `Disseminar boas práticas e incentivar amigos e familiares a adotarem hábitos sustentáveis`,
+                                `Desperdiçar água potável e energia elétrica sem preocupação com a escassez`,
+                                `Apoiar comércios e empreendedores que adotam práticas de respeito ao meio ambiente`
+                            ],
+                            correctIndices: [0, 1, 3],
+                            explanation: `Os 4Rs, a influência positiva entre pares e o consumo ético fortalecem os pilares da sustentabilidade.`
+                        },
+                        {
+                            q: `Quais os benefícios diretos do cumprimento do ${meta.title} para a qualidade de vida das futuras gerações?`,
+                            opts: [
+                                `Preservação dos ecossistemas vitais e garantia de recursos essenciais para a sobrevivência`,
+                                `Redução progressiva das desigualdades e construção de uma sociedade mais justa e inclusiva`,
+                                `Aumento da dependência de fontes poluentes e esgotamento de matérias-primas`,
+                                `Melhoria significativa na saúde coletiva, segurança alimentar e bem-estar geral`
+                            ],
+                            correctIndices: [0, 1, 3],
+                            explanation: `Garantir o sustentável hoje assegura saúde, equidade e abundância de recursos para as próximas gerações.`
+                        },
+                        {
+                            q: `De que forma o voluntariado e a inovação social fortalecem as metas do ${meta.title}?`,
+                            opts: [
+                                `Criando ferramentas digitais e aplicativos simples para resolver dilemas locais do bairro`,
+                                `Dedicar tempo para ensinar e apoiar pessoas vulneráveis da comunidade`,
+                                `Recusar-se a trabalhar em equipe para resolver problemas coletivos`,
+                                `Promover mutirões de melhoria urbana e recuperação de espaços comunitários`
+                            ],
+                            correctIndices: [0, 1, 3],
+                            explanation: `Ferramentas de inovação, mentoria voluntária e mutirões comunitários geram impacto direto e sustentável.`
+                        }
+                    ],
+                    actions: [
+                        { title: `Ação Prática ${meta.title}`, desc: `Execute uma microação diária relacionada a ${meta.title}.`, impact: `Gera impacto positivo direto no indicador do ${meta.title}.` },
+                        { title: 'Conscientização em Rede', desc: 'Compartilhe um aprendizado desta ODS com pelo menos 3 amigos.', impact: 'Dissemina conhecimento e inspira mais pessoas a agir.' }
+                    ]
+                });
+            }
+        })();
+
+        function getOdsData(id) {
+            return odsList.find(o => o.id === id) || odsList[0];
+        }
+
+        // --- MATH SOCIAL IMPACT CALCULATION (55.55 PTS PER COMPLETED ODS) ---
+        function calculateTotalSocialImpact() {
+            let totalImpact = 0;
+            const pointsPerOds = 1000 / 18; // Exactly 55.5555... points per 100% completed ODS
+
+            for (let i = 1; i <= 18; i++) {
+                const prog = userState.odsProgress[i];
+                if (prog) {
+                    let odsFraction = 0;
+                    if (prog.step1Completed) odsFraction += 0.20; // 20%
+                    if (prog.step2Completed) odsFraction += 0.20; // 20%
+                    if (prog.step3Completed) odsFraction += 0.40 * ((prog.gdScore || 0) / 100); // Up to 40% based on score
+                    if (prog.step4Completed) odsFraction += 0.20; // 20%
+
+                    totalImpact += (odsFraction * pointsPerOds);
+                }
+            }
+
+            return Math.min(1000, Math.round(totalImpact));
+        }
+
+        // --- RENDER COMMENTED ANSWER KEY (GABARITO COMENTADO) ---
+        function renderGabarito() {
+            const container = document.getElementById('gabarito-list-container');
+            if (!container) return;
+
+            const odsId = userState.activeOdsId;
+            const ods = getOdsData(odsId);
+            const hexColor = odsHexColors[odsId] || '#E5243B';
+            const prog = userState.odsProgress[odsId] || {};
+            const userChoices = prog.gdUserAnswers || {};
+
+            container.innerHTML = '';
+
+            ods.gdQuestions.forEach((q, qIdx) => {
+                const userChoiceArr = userChoices[qIdx] || [];
+                const correctIndices = q.correctIndices || [];
+
+                // Lógica para determinar se a questão foi Acertou, Parcial ou Errou
+                let correctMatches = 0;
+                let wrongMatches = 0;
+
+                userChoiceArr.forEach(idx => {
+                    if (correctIndices.includes(idx)) {
+                        correctMatches++;
+                    } else {
+                        wrongMatches++;
+                    }
+                });
+
+                let statusBadge = { label: 'Errou', bg: 'bg-rose-500', text: 'text-white', icon: 'ph-x-circle', boxBg: 'bg-rose-50 border-rose-200 text-rose-900' };
+
+                if (wrongMatches === 0 && correctMatches === correctIndices.length) {
+                    statusBadge = { label: 'Acertou!', bg: 'bg-emerald-500', text: 'text-white', icon: 'ph-check-circle', boxBg: 'bg-emerald-50 border-emerald-200 text-emerald-950' };
+                } else if (correctMatches > 0) {
+                    statusBadge = { label: 'Parcial', bg: 'bg-amber-400', text: 'text-amber-950', icon: 'ph-minus-circle', boxBg: 'bg-amber-50 border-amber-200 text-amber-950' };
+                }
+
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-3xl p-4 sm:p-5 border-2 border-slate-100 shadow-sm space-y-3';
+
+                let optionsMarkup = '';
+                const letters = ['A', 'B', 'C', 'D', 'E'];
+
+                q.opts.forEach((optText, optIdx) => {
+                    const isCorrect = correctIndices.includes(optIdx);
+                    const isUserSelected = userChoiceArr.includes(optIdx);
+
+                    let checkState = 'border-slate-300 bg-white';
+                    let iconContent = '';
+
+                    if (isUserSelected && isCorrect) {
+                        checkState = 'border-emerald-500 bg-emerald-500 text-white';
+                        iconContent = '<i class="ph-bold ph-check text-xs"></i>';
+                    } else if (isUserSelected && !isCorrect) {
+                        checkState = 'border-rose-500 bg-rose-500 text-white';
+                        iconContent = '<i class="ph-bold ph-x text-xs"></i>';
+                    } else if (isCorrect) {
+                        checkState = 'border-emerald-400 bg-emerald-100 text-emerald-700';
+                        iconContent = '<i class="ph-bold ph-check text-xs"></i>';
+                    }
+
+                    optionsMarkup += `
+                        <div class="flex items-start space-x-2.5 py-1 text-xs sm:text-sm font-semibold text-slate-700">
+                            <div class="w-5 h-5 rounded-md border ${checkState} flex items-center justify-center shrink-0 mt-0.5">
+                                ${iconContent}
+                            </div>
+                            <span class="leading-tight"><strong class="text-brand-navy">${letters[optIdx]})</strong> ${optText}</span>
+                        </div>
+                    `;
+                });
+
+                card.innerHTML = `
+                    <div class="flex items-center justify-between pb-1">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-7 h-7 rounded-full bg-sky-100 text-brand-navy font-black text-xs flex items-center justify-center shrink-0">
+                                ${qIdx + 1}
+                            </span>
+                            <div>
+                                <h4 class="text-xs sm:text-sm font-black text-brand-navy leading-tight">${q.q}</h4>
+                                <span class="text-[10px] font-bold text-slate-400">Tempo: 00:45</span>
+                            </div>
+                        </div>
+
+                        <span class="px-3 py-1 rounded-full text-xs font-black flex items-center space-x-1 ${statusBadge.bg} ${statusBadge.text} shadow-xs shrink-0">
+                            <i class="ph-fill ${statusBadge.icon} text-sm"></i>
+                            <span>${statusBadge.label}</span>
+                        </span>
+                    </div>
+
+                    <div class="space-y-1.5 pt-1 border-t border-slate-100">
+                        ${optionsMarkup}
+                    </div>
+
+                    <div class="p-3.5 rounded-2xl border ${statusBadge.boxBg} text-xs font-medium leading-relaxed mt-2">
+                        ${q.explanation}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // --- PROFILE & BADGES RENDERER ---
+        function renderProfile() {
+            document.getElementById('profile-coins-display').innerText = `${userState.coins} moedas`;
+
+            const totalImpact = calculateTotalSocialImpact();
+            document.getElementById('profile-impact-text').innerText = `${totalImpact} / 1000 pts`;
+            document.getElementById('profile-impact-bar').style.width = `${(totalImpact / 1000) * 100}%`;
+
+            const badgesHeaderContainer = document.getElementById('profile-badges-header');
+            const badgesGridContainer = document.getElementById('profile-badges-grid');
+
+            if (!badgesHeaderContainer || !badgesGridContainer) return;
+
+            badgesHeaderContainer.innerHTML = '';
+            badgesGridContainer.innerHTML = '';
+
+            let completedCount = 0;
+
+            odsList.forEach(ods => {
+                const prog = userState.odsProgress[ods.id];
+                const isUnlocked = prog && prog.step4Completed;
+                const hexColor = odsHexColors[ods.id] || '#E5243B';
+
+                if (isUnlocked) completedCount++;
+
+                const badgeBox = document.createElement('div');
+                badgeBox.className = `p-3 rounded-2xl border-2 flex flex-col items-center text-center space-y-1 transition-all ${isUnlocked ? 'shadow-sm' : 'bg-slate-50 border-slate-200 grayscale opacity-60'}`;
+                
+                if (isUnlocked) {
+                    badgeBox.style.borderColor = hexColor;
+                    badgeBox.style.backgroundColor = `${hexColor}0D`;
+                }
+
+                badgeBox.innerHTML = `
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-sm" style="background-color: ${hexColor}">
+                        <i class="ph-fill ${getOdsIconClass(ods.id)} text-xl"></i>
+                    </div>
+                    <span class="text-[9px] font-black uppercase text-slate-400">ODS ${ods.id}</span>
+                    <h5 class="text-[10px] font-extrabold text-slate-800 line-clamp-1">${ods.title}</h5>
+                    <span class="text-[8px] font-black px-1.5 py-0.5 rounded ${isUnlocked ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-600'}">
+                        ${isUnlocked ? 'Selo Conquistado' : 'Bloqueado'}
+                    </span>
+                `;
+                badgesGridContainer.appendChild(badgeBox);
+            });
+
+            const levelBadge = document.createElement('span');
+            levelBadge.className = 'bg-brand-navy text-white text-[10px] font-black px-2.5 py-1 rounded-full flex items-center shadow-sm';
+            levelBadge.innerHTML = `<i class="ph-fill ph-trophy text-amber-400 mr-1 text-xs"></i> Nível ${completedCount > 5 ? 'Avançado' : completedCount > 0 ? 'Iniciante' : 'Novato'}`;
+            badgesHeaderContainer.appendChild(levelBadge);
+        }
+
+        // --- CORE NAVIGATION & APP ENGINE ---
+        function initOdsProgress() {
+            odsList.forEach(ods => {
+                if (!userState.odsProgress[ods.id]) {
+                    userState.odsProgress[ods.id] = {
+                        step1Completed: false,
+                        step2Completed: false,
+                        step3Completed: false,
+                        step4Completed: false,
+                        gdScore: 0,
+                        gdUserAnswers: {}
+                    };
+                }
+            });
+
+            renderOdsGrid();
+            renderProfile();
+        }
+
+        function navigateTo(viewId) {
+            const views = document.querySelectorAll('.app-view');
+            views.forEach(v => v.classList.add('hidden-view'));
+
+            const targetView = document.getElementById(viewId);
+            if (targetView) {
+                targetView.classList.remove('hidden-view');
+            }
+
+            const mainNav = document.getElementById('main-nav');
+            if (viewId === 'view-auth') {
+                mainNav.classList.add('hidden-view');
+            } else {
+                mainNav.classList.remove('hidden-view');
+            }
+
+            // Update active state in nav buttons
+            const navButtons = document.querySelectorAll('.nav-btn');
+            navButtons.forEach(btn => {
+                btn.classList.remove('text-brand-blue', 'bg-sky-50');
+                btn.classList.add('text-slate-400');
+            });
+
+            if (viewId === 'view-home') {
+                const btn = document.getElementById('nav-btn-home');
+                if (btn) { btn.classList.add('text-brand-blue', 'bg-sky-50'); btn.classList.remove('text-slate-400'); }
+            } else if (viewId === 'view-trail') {
+                const btn = document.getElementById('nav-btn-trail');
+                if (btn) { btn.classList.add('text-brand-blue', 'bg-sky-50'); btn.classList.remove('text-slate-400'); }
+            } else if (viewId === 'view-actions-list' || viewId === 'view-action-detail') {
+                const btn = document.getElementById('nav-btn-actions');
+                if (btn) { btn.classList.add('text-brand-blue', 'bg-sky-50'); btn.classList.remove('text-slate-400'); }
+            } else if (viewId === 'view-profile') {
+                const btn = document.getElementById('nav-btn-profile');
+                if (btn) { btn.classList.add('text-brand-blue', 'bg-sky-50'); btn.classList.remove('text-slate-400'); }
+                renderProfile();
+            }
+        }
+
+        function doLogin() {
+            const input = document.getElementById('login-email');
+            const val = input.value.trim();
+            userState.username = val || 'Novo Usuário';
+
+            const userLbl = document.getElementById('lbl-home-user');
+            const profLbl = document.getElementById('lbl-profile-name');
+            const homeAvatar = document.getElementById('img-home-avatar');
+            const profAvatar = document.getElementById('img-profile-avatar');
+
+            if (userLbl) userLbl.innerText = `Olá, ${userState.username}!`;
+            if (profLbl) profLbl.innerText = userState.username;
+
+            const initialLetter = userState.username.charAt(0).toUpperCase();
+            if (homeAvatar) homeAvatar.innerText = initialLetter;
+            if (profAvatar) profAvatar.innerText = initialLetter;
+
+            navigateTo('view-home');
+        }
+
+        function openEditModal() {
+            document.getElementById('input-modal-username').value = userState.username;
+            document.getElementById('modal-edit-username').classList.remove('hidden-view');
+        }
+
+        function closeEditModal() {
+            document.getElementById('modal-edit-username').classList.add('hidden-view');
+        }
+
+        function saveNewUsername() {
+            const val = document.getElementById('input-modal-username').value.trim();
+            if (val) {
+                userState.username = val;
+                document.getElementById('lbl-home-user').innerText = `Olá, ${val}!`;
+                document.getElementById('lbl-profile-name').innerText = val;
+                const initial = val.charAt(0).toUpperCase();
+                document.getElementById('img-home-avatar').innerText = initial;
+                document.getElementById('img-profile-avatar').innerText = initial;
+            }
+            closeEditModal();
+        }
+
+        function selectOds(odsId) {
+            userState.activeOdsId = odsId;
+            const ods = getOdsData(odsId);
+            const hexColor = odsHexColors[odsId] || '#E5243B';
+
+            // Trail updates
+            document.getElementById('trail-ods-badge').innerText = `ODS ${odsId}`;
+            document.getElementById('trail-ods-title').innerText = ods.title;
+            document.getElementById('trail-ods-banner').style.backgroundColor = hexColor;
+            document.getElementById('trail-ods-icon').className = `ph-fill ${getOdsIconClass(odsId)} text-5xl`;
+
+            updateTrailNodesUI();
+            navigateTo('view-trail');
+
+            // Draw line dynamically after DOM renders
+            setTimeout(drawDottedTrailPath, 50);
+        }
+
+        // DYNAMIC SVG TRAIL DRAWING
+        function drawDottedTrailPath() {
+            const container = document.getElementById('duo-trail-container');
+            const pathLine = document.getElementById('trail-path-line');
+            if (!container || !pathLine) return;
+
+            const n1 = document.getElementById('duo-node-1');
+            const n2 = document.getElementById('duo-node-2');
+            const n3 = document.getElementById('duo-node-3');
+            const n4 = document.getElementById('duo-node-4');
+
+            const l1 = document.getElementById('duo-label-1');
+            const l2 = document.getElementById('duo-label-2');
+            const l3 = document.getElementById('duo-label-3');
+
+            if (!n1 || !n2 || !n3 || !n4) return;
+
+            const cRect = container.getBoundingClientRect();
+            
+            // Posição de borda inferior do nó anterior (após o texto da etiqueta) e borda superior do nó seguinte
+            const getBottomEdge = (nodeElem, labelElem) => {
+                const targetRect = (labelElem || nodeElem).getBoundingClientRect();
+                return {
+                    x: targetRect.left + targetRect.width / 2 - cRect.left,
+                    y: targetRect.bottom - cRect.top + 4
+                };
+            };
+
+            const getTopEdge = (nodeElem) => {
+                const nRect = nodeElem.getBoundingClientRect();
+                return {
+                    x: nRect.left + nRect.width / 2 - cRect.left,
+                    y: nRect.top - cRect.top - 4
+                };
+            };
+
+            const start1 = getBottomEdge(n1, l1);
+            const end1 = getTopEdge(n2);
+
+            const start2 = getBottomEdge(n2, l2);
+            const end2 = getTopEdge(n3);
+
+            const start3 = getBottomEdge(n3, l3);
+            const end3 = getTopEdge(n4);
+
+            // Trajetos contínuos apenas nos intervalos entre os elementos visíveis
+            const pathData = `
+                M ${start1.x} ${start1.y} 
+                C ${start1.x} ${(start1.y + end1.y) / 2}, ${end1.x} ${(start1.y + end1.y) / 2}, ${end1.x} ${end1.y}
+                
+                M ${start2.x} ${start2.y} 
+                C ${start2.x} ${(start2.y + end2.y) / 2}, ${end2.x} ${(start2.y + end2.y) / 2}, ${end2.x} ${end2.y}
+                
+                M ${start3.x} ${start3.y} 
+                C ${start3.x} ${(start3.y + end3.y) / 2}, ${end3.x} ${(start3.y + end3.y) / 2}, ${end3.x} ${end3.y}
+            `;
+
+            const odsId = userState.activeOdsId;
+            const hexColor = odsHexColors[odsId] || '#E5243B';
+
+            pathLine.setAttribute('d', pathData.trim());
+            pathLine.setAttribute('stroke', hexColor);
+        }
+
+        // Recalculate on screen resize
+        window.addEventListener('resize', () => {
+            if (!document.getElementById('view-trail').classList.contains('hidden-view')) {
+                drawDottedTrailPath();
+            }
+        });
+
+        function updateTrailNodesUI() {
+
+            const pathLine = document.getElementById('trail-path-line');
+            if (pathLine) {
+                pathLine.setAttribute('stroke', hexColor);
+            }
+
+            updateTrailNodesUI();
+            navigateTo('view-trail');
+        }
+
+        function updateTrailNodesUI() {
+            const odsId = userState.activeOdsId;
+            const prog = userState.odsProgress[odsId] || {};
+            const hexColor = odsHexColors[odsId] || '#E5243B';
+
+            // Node 1 (Conceito) - sempre aberto
+            const n1 = document.getElementById('duo-node-1');
+            n1.style.backgroundColor = hexColor;
+
+            // Node 2 (Quiz)
+            const n2Wrap = document.getElementById('duo-node-2-wrap');
+            const n2 = document.getElementById('duo-node-2');
+            const icon2 = document.getElementById('duo-icon-2');
+            if (prog.step1Completed) {
+                n2Wrap.classList.remove('step-locked');
+                n2.style.backgroundColor = hexColor;
+                icon2.className = 'ph-fill ph-question text-3xl';
+            } else {
+                n2Wrap.classList.add('step-locked');
+                n2.style.backgroundColor = '#94A3B8';
+                icon2.className = 'ph-fill ph-lock-key text-3xl';
+            }
+
+            // Node 3 (Desafio)
+            const n3Wrap = document.getElementById('duo-node-3-wrap');
+            const n3 = document.getElementById('duo-node-3');
+            const icon3 = document.getElementById('duo-icon-3');
+            if (prog.step2Completed) {
+                n3Wrap.classList.remove('step-locked');
+                n3.style.backgroundColor = hexColor;
+                icon3.className = 'ph-fill ph-trophy text-3xl';
+            } else {
+                n3Wrap.classList.add('step-locked');
+                n3.style.backgroundColor = '#94A3B8';
+                icon3.className = 'ph-fill ph-lock-key text-3xl';
+            }
+
+            // Node 4 (Missões)
+            const n4Wrap = document.getElementById('duo-node-4-wrap');
+            const n4 = document.getElementById('duo-node-4');
+            const icon4 = document.getElementById('duo-icon-4');
+            if (prog.step3Completed) {
+                n4Wrap.classList.remove('step-locked');
+                n4.style.backgroundColor = hexColor;
+                icon4.className = 'ph-fill ph-target text-3xl';
+            } else {
+                n4Wrap.classList.add('step-locked');
+                n4.style.backgroundColor = '#94A3B8';
+                icon4.className = 'ph-fill ph-lock-key text-3xl';
+            }
+        }
+
+        function handleTrailStepClick(stepType) {
+            const odsId = userState.activeOdsId;
+            const prog = userState.odsProgress[odsId] || {};
+
+            if (stepType === 'concept') {
+                renderStep1Concept();
+                navigateTo('view-lesson-intro');
+            } else if (stepType === 'quiz') {
+                if (!prog.step1Completed) return;
+                startSimpleQuiz();
+            } else if (stepType === 'challenge') {
+                if (!prog.step2Completed) return;
+                navigateTo('view-grande-desafio-intro');
+            } else if (stepType === 'actions') {
+                if (!prog.step3Completed) return;
+                renderActionsList();
+                navigateTo('view-actions-list');
+            }
+        }
+
+        function checkAndNavigateActions() {
+            const odsId = userState.activeOdsId;
+            const prog = userState.odsProgress[odsId] || {};
+            if (prog.step3Completed) {
+                renderActionsList();
+                navigateTo('view-actions-list');
+            } else {
+                selectOds(userState.activeOdsId);
+            }
+        }
+
+        function renderOdsGrid() {
+            const container = document.getElementById('ods-grid-container');
+            if (!container) return;
+            container.innerHTML = '';
+
+            odsList.forEach(ods => {
+                const hexColor = odsHexColors[ods.id] || '#E5243B';
+                const card = document.createElement('div');
+                card.className = 'ods-card bg-white rounded-3xl p-4 border-2 border-slate-100 shadow-sm cursor-pointer hover:shadow-md transition-all flex flex-col justify-between min-h-[130px]';
+                card.onclick = () => selectOds(ods.id);
+
+                card.innerHTML = `
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-black px-2.5 py-0.5 rounded-md text-white" style="background-color: ${hexColor}">ODS ${ods.id}</span>
+                        <div class="w-9 h-9 rounded-full flex items-center justify-center text-white shadow-sm" style="background-color: ${hexColor}">
+                            <i class="ph-fill ${getOdsIconClass(ods.id)} text-lg"></i>
+                        </div>
+                    </div>
+                    <h4 class="text-sm font-black text-slate-800 line-clamp-2 leading-snug">${ods.title}</h4>
+                    <div class="mt-3 flex items-center justify-between pt-2 border-t border-slate-100">
+                        <span class="text-xs font-black text-slate-400">Ver Trilha</span>
+                        <i class="ph-bold ph-arrow-right text-xs text-slate-400"></i>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function filterOdsGrid() {
+            const query = document.getElementById('ods-search').value.toLowerCase();
+            const cards = document.querySelectorAll('.ods-card');
+            cards.forEach(card => {
+                const text = card.innerText.toLowerCase();
+                if (text.includes(query)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function renderStep1Concept() {
+            const odsId = userState.activeOdsId;
+            const ods = getOdsData(odsId);
+            const hexColor = odsHexColors[odsId] || '#E5243B';
+
+            document.getElementById('lesson-ods-badge').innerText = `ODS ${odsId}`;
+            document.getElementById('lesson-ods-title').innerText = ods.title;
+            document.getElementById('lesson-ods-banner').style.backgroundColor = hexColor;
+            document.getElementById('lesson-ods-icon').className = `ph-fill ${getOdsIconClass(odsId)} text-4xl text-white`;
+
+            document.getElementById('lesson-ods-official-logo').style.backgroundColor = hexColor;
+            document.getElementById('lesson-logo-num-val').innerText = odsId;
+            document.getElementById('lesson-logo-ods-tag').style.backgroundColor = hexColor;
+            document.getElementById('lesson-logo-ods-name').innerText = ods.title;
+            document.getElementById('lesson-ods-theory').innerText = ods.theory;
+
+            const container = document.getElementById('lesson-ods-illustration-container');
+            const photoUrl = ods.photo || `https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=800&q=80`;
+            const captionText = ods.caption || `${ods.title} na Prática`;
+
+            container.innerHTML = `
+                <div class="relative w-full h-56 rounded-2xl overflow-hidden shadow-sm group">
+                    <img src="${photoUrl}" alt="${ods.title}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.src='https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=800&q=80'">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent flex items-end p-3.5">
+                        <div class="flex items-center space-x-2 text-white">
+                            <i class="ph-bold ph-camera text-base text-amber-300"></i>
+                            <p class="text-xs font-black tracking-wide leading-snug drop-shadow">${captionText}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('lesson-importance-box').style.borderColor = `${hexColor}40`;
+            document.getElementById('lesson-importance-box').style.backgroundColor = `${hexColor}0D`;
+            document.getElementById('lesson-importance-icon-bg').style.backgroundColor = hexColor;
+            document.getElementById('lesson-ods-importance').innerText = ods.importance;
+
+            const finishBtn = document.getElementById('btn-finish-lesson-intro');
+            finishBtn.style.backgroundColor = hexColor;
+            finishBtn.style.borderBottomColor = hexColor;
+        }
+
+        function finishStep1() {
+            const odsId = userState.activeOdsId;
+            userState.odsProgress[odsId].step1Completed = true;
+            updateTrailNodesUI();
+            startSimpleQuiz();
+        }
+
+        // Simple Quiz State & Functions
+        let currentSimpleQIdx = 0;
+        let simpleQuizCorrectCount = 0;
+        let simpleQuizSelectedOpt = null;
+
+        function startSimpleQuiz() {
+            currentSimpleQIdx = 0;
+            simpleQuizCorrectCount = 0;
+            renderSimpleQuizQuestion();
+            navigateTo('view-lesson-quiz');
+        }
+
+        function renderSimpleQuizQuestion() {
+            const odsId = userState.activeOdsId;
+            const ods = getOdsData(odsId);
+            const hexColor = odsHexColors[odsId] || '#E5243B';
+            const qObj = ods.simpleQuestions[currentSimpleQIdx];
+
+            document.getElementById('simple-quiz-badge').innerText = `ODS ${odsId}`;
+            document.getElementById('simple-quiz-title').innerText = `Quiz de Fixação - ODS ${odsId}`;
+            document.getElementById('simple-quiz-banner').style.backgroundColor = hexColor;
+            document.getElementById('simple-quiz-icon').className = `ph-fill ${getOdsIconClass(odsId)} text-2xl text-white`;
+
+            document.getElementById('simple-q-count').innerText = `${currentSimpleQIdx + 1}/${ods.simpleQuestions.length}`;
+            document.getElementById('simple-q-count').style.backgroundColor = hexColor;
+            document.getElementById('simple-q-title').innerText = qObj.q;
+
+            document.getElementById('simple-quiz-feedback').classList.add('hidden-view');
+            simpleQuizSelectedOpt = null;
+
+            const optionsContainer = document.getElementById('simple-q-options');
+            optionsContainer.innerHTML = '';
+
+            qObj.opts.forEach((optText, optIdx) => {
+                const btn = document.createElement('button');
+                btn.className = 'w-full p-4 rounded-2xl border-2 border-slate-200 bg-slate-50 hover:bg-white text-left text-sm font-extrabold text-slate-800 transition-all flex items-center justify-between shadow-sm';
+                btn.innerHTML = `
+                    <span class="pr-2">${optText}</span>
+                    <div class="w-6 h-6 rounded-full border-2 border-slate-300 shrink-0 ml-2 flex items-center justify-center"></div>
+                `;
+                btn.onclick = () => handleSelectSimpleOpt(optIdx, btn);
+                optionsContainer.appendChild(btn);
+            });
+
+            const nextBtn = document.getElementById('btn-next-simple');
+            nextBtn.style.backgroundColor = hexColor;
+            nextBtn.style.borderBottomColor = hexColor;
+        }
+
+        function handleSelectSimpleOpt(optIdx, btnElem) {
+            if (simpleQuizSelectedOpt !== null) return; // Prevent multiple selects
+            simpleQuizSelectedOpt = optIdx;
+
+            const odsId = userState.activeOdsId;
+            const ods = getOdsData(odsId);
+            const qObj = ods.simpleQuestions[currentSimpleQIdx];
+            const isCorrect = optIdx === qObj.correctIdx;
+
+            const options = document.querySelectorAll('#simple-q-options button');
+            options.forEach((b, idx) => {
+                if (idx === qObj.correctIdx) {
+                    b.className = 'w-full p-3.5 rounded-2xl border-2 border-emerald-500 bg-emerald-50 text-left text-xs font-black text-emerald-900 transition-all flex items-center justify-between shadow-sm';
+                    b.querySelector('div').className = 'w-5 h-5 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0 ml-2';
+                    b.querySelector('div').innerHTML = '<i class="ph-bold ph-check text-xs"></i>';
+                } else if (idx === optIdx && !isCorrect) {
+                    b.className = 'w-full p-3.5 rounded-2xl border-2 border-rose-500 bg-rose-50 text-left text-xs font-black text-rose-900 transition-all flex items-center justify-between shadow-sm';
+                    b.querySelector('div').className = 'w-5 h-5 rounded-full bg-rose-500 text-white flex items-center justify-center shrink-0 ml-2';
+                    b.querySelector('div').innerHTML = '<i class="ph-bold ph-x text-xs"></i>';
+                }
+            });
+
+            const fbBox = document.getElementById('simple-quiz-feedback');
+            fbBox.classList.remove('hidden-view');
+
+            if (isCorrect) {
+                simpleQuizCorrectCount++;
+                fbBox.className = 'rounded-2xl p-4 flex items-start space-x-3 transition-all bg-emerald-50 border border-emerald-200 text-emerald-900';
+                document.getElementById('feedback-icon-box').className = 'w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm';
+                document.getElementById('feedback-icon').className = 'ph-bold ph-check text-lg';
+                document.getElementById('feedback-title').innerText = 'Excelente!';
+            } else {
+                fbBox.className = 'rounded-2xl p-4 flex items-start space-x-3 transition-all bg-rose-50 border border-rose-200 text-rose-900';
+                document.getElementById('feedback-icon-box').className = 'w-8 h-8 rounded-full bg-rose-500 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm';
+                document.getElementById('feedback-icon').className = 'ph-bold ph-x text-lg';
+                document.getElementById('feedback-title').innerText = 'Resposta incorreta!';
+            }
+
+            document.getElementById('feedback-text').innerText = qObj.explanation;
+        }
+
+        function nextSimpleQuiz() {
+            if (simpleQuizSelectedOpt === null) return;
+
+            const odsId = userState.activeOdsId;
+            const ods = getOdsData(odsId);
+            const hexColor = odsHexColors[odsId] || '#E5243B';
+            currentSimpleQIdx++;
+
+            if (currentSimpleQIdx < ods.simpleQuestions.length) {
+                renderSimpleQuizQuestion();
+            } else {
+                if (simpleQuizCorrectCount >= 2) {
+                    userState.odsProgress[odsId].step2Completed = true;
+                    updateTrailNodesUI();
+
+                    // Prepara o botão de Iniciar Grande Desafio na cor do ODS
+                    const startBtn = document.getElementById('btn-start-gd');
+                    if (startBtn) {
+                        startBtn.style.backgroundColor = hexColor;
+                        startBtn.style.borderBottomColor = hexColor;
+                    }
+
+                    navigateTo('view-grande-desafio-intro');
+                } else {
+                    // Prepara a tela de "Precisa de mais atenção" com os dados do desempenho
+                    const retryMsg = document.getElementById('simple-retry-msg');
+                    const retryBadge = document.getElementById('simple-retry-score-badge');
+                    const retryBtn = document.getElementById('btn-retry-simple-action');
+
+                    if (retryMsg) {
+                        retryMsg.innerText = `Você acertou ${simpleQuizCorrectCount} de ${ods.simpleQuestions.length} questões. Para avançar para o Grande Desafio, é necessário acertar pelo menos 2 questões.`;
+                    }
+                    if (retryBadge) {
+                        retryBadge.innerText = `Seu desempenho: ${simpleQuizCorrectCount}/${ods.simpleQuestions.length} acertos`;
+                    }
+                    if (retryBtn) {
+                        retryBtn.style.backgroundColor = hexColor;
+                        retryBtn.style.borderBottomColor = hexColor;
+                    }
+
+                    navigateTo('view-simple-quiz-retry');
+                }
+            }
+        }
+
+        // Grande Desafio State & Functions
+        let gdTimerInterval = null;
+        let gdTimeSeconds = 300;
+        let gdCurrentQIdx = 0;
+        let gdUserSelections = {};
+
+        function startGrandeDesafio() {
+            const odsId = userState.activeOdsId;
+            const hexColor = odsHexColors[odsId] || '#E5243B';
+
+            gdCurrentQIdx = 0;
+            gdUserSelections = {};
+            gdTimeSeconds = 300;
+
+            const startBtn = document.getElementById('btn-start-gd');
+            if (startBtn) {
+                startBtn.style.backgroundColor = hexColor;
+                startBtn.style.borderBottomColor = hexColor;
+            }
+
+            renderGdQuestion();
+            navigateTo('view-grande-desafio-quiz');
+
+            clearInterval(gdTimerInterval);
+            gdTimerInterval = setInterval(() => {
+                gdTimeSeconds--;
+                const mins = Math.floor(gdTimeSeconds / 60);
+                const secs = gdTimeSeconds % 60;
+                document.getElementById('gd-timer-clock').innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+                if (gdTimeSeconds <= 0) {
+                    clearInterval(gdTimerInterval);
+                    finishGrandeDesafio();
+                }
+            }, 1000);
+        }
+
+        function renderGdQuestion() {
+            const odsId = userState.activeOdsId;
+            const ods = getOdsData(odsId);
+            const hexColor = odsHexColors[odsId] || '#E5243B';
+            const qObj = ods.gdQuestions[gdCurrentQIdx];
+
+            document.getElementById('gd-quiz-badge').innerText = `ODS ${odsId}`;
+            document.getElementById('gd-quiz-title').innerText = ods.title;
+            document.getElementById('gd-quiz-banner').style.backgroundColor = hexColor;
+
+            document.getElementById('gd-q-number').innerText = `Questão ${gdCurrentQIdx + 1} de ${ods.gdQuestions.length}`;
+            document.getElementById('gd-q-title').innerText = qObj.q;
+
+            const container = document.getElementById('gd-options');
+            container.innerHTML = '';
+
+            const currentChoices = gdUserSelections[gdCurrentQIdx] || [];
+
+            qObj.opts.forEach((optText, optIdx) => {
+                const isSelected = currentChoices.includes(optIdx);
+                const item = document.createElement('div');
+                item.className = `p-4 rounded-2xl border-2 text-sm font-extrabold cursor-pointer transition-all flex items-center justify-between shadow-sm ${isSelected ? 'border-brand-blue bg-sky-50 text-brand-blue' : 'border-slate-200 bg-slate-50 text-slate-800'}`;
+                item.onclick = () => toggleGdChoice(optIdx);
+
+                item.innerHTML = `
+                    <span class="pr-2">${optText}</span>
+                    <div class="w-6 h-6 rounded-md border-2 flex items-center justify-center shrink-0 ml-2 ${isSelected ? 'bg-brand-blue border-brand-blue text-white' : 'border-slate-300'}">
+                        ${isSelected ? '<i class="ph-bold ph-check text-sm"></i>' : ''}
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+
+            const nextBtn = document.getElementById('btn-next-gd');
+            nextBtn.style.backgroundColor = hexColor;
+            nextBtn.style.borderBottomColor = hexColor;
+            document.getElementById('btn-next-gd-text').innerText = (gdCurrentQIdx === ods.gdQuestions.length - 1) ? 'Finalizar Desafio' : 'Próxima questão';
+        }
+
+        function toggleGdChoice(optIdx) {
+            if (!gdUserSelections[gdCurrentQIdx]) {
+                gdUserSelections[gdCurrentQIdx] = [];
+            }
+            const arr = gdUserSelections[gdCurrentQIdx];
+            const pos = arr.indexOf(optIdx);
+            if (pos > -1) {
+                arr.splice(pos, 1);
+            } else {
+                arr.push(optIdx);
+            }
+            renderGdQuestion();
+        }
+
+        function nextGdQuestion() {
+            const odsId = userState.activeOdsId;
+            const ods = getOdsData(odsId);
+
+            if (gdCurrentQIdx < ods.gdQuestions.length - 1) {
+                gdCurrentQIdx++;
+                renderGdQuestion();
+            } else {
+                clearInterval(gdTimerInterval);
+                finishGrandeDesafio();
+            }
+        }
+
+        function finishGrandeDesafio() {
+            const odsId = userState.activeOdsId;
+            const ods = getOdsData(odsId);
+            const hexColor = odsHexColors[odsId] || '#E5243B';
+
+            let accumulatedPct = 0;
+            ods.gdQuestions.forEach((q, idx) => {
+                const userChoice = (gdUserSelections[idx] || []);
+                const correctIndices = q.correctIndices || [];
+                
+                // Cálculo de pontuação com penalização para opções erradas marcadas
+                let correctMatches = 0;
+                let wrongMatches = 0;
+
+                userChoice.forEach(c => {
+                    if (correctIndices.includes(c)) {
+                        correctMatches++;
+                    } else {
+                        wrongMatches++;
+                    }
+                });
+
+                if (correctIndices.length > 0) {
+                    // Cada opção certa soma +1/total, cada opção errada assinalada subtrai -1/total
+                    const unitValue = 1 / correctIndices.length;
+                    const questionFraction = Math.max(0, (correctMatches * unitValue) - (wrongMatches * unitValue));
+                    
+                    accumulatedPct += questionFraction * 20; // 5 questões * 20% = 100%
+                }
+            });
+
+            const totalPoints = Math.min(100, Math.round(accumulatedPct));
+
+            userState.odsProgress[odsId].gdScore = totalPoints;
+            userState.odsProgress[odsId].gdUserAnswers = gdUserSelections;
+            userState.odsProgress[odsId].step3Completed = true;
+
+            userState.coins += 50;
+
+            document.getElementById('res-score-pct').innerText = `${totalPoints}%`;
+            const circle = document.getElementById('res-score-circle');
+            if (circle) {
+                circle.style.stroke = hexColor;
+                const offset = 251.2 - (251.2 * (totalPoints / 100));
+                circle.style.strokeDashoffset = offset;
+            }
+
+            const timeSpentSecs = 300 - gdTimeSeconds;
+            const mins = Math.floor(timeSpentSecs / 60);
+            const secs = timeSpentSecs % 60;
+            document.getElementById('res-time-spent').innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+            const actBtn = document.getElementById('btn-res-actions');
+            if (actBtn) {
+                actBtn.style.backgroundColor = hexColor;
+                actBtn.style.borderBottomColor = hexColor;
+            }
+
+            updateTrailNodesUI();
+            navigateTo('view-gd-results');
+        }
+
+        function handleActionsNavigation() {
+            renderActionsList();
+            navigateTo('view-actions-list');
+        }
+
+        function renderActionsList() {
+            const odsId = userState.activeOdsId;
+            const ods = getOdsData(odsId);
+            const hexColor = odsHexColors[odsId] || '#E5243B';
+
+            document.getElementById('actions-ods-badge').innerText = `ODS ${odsId}`;
+            document.getElementById('actions-ods-title').innerText = ods.title;
+            document.getElementById('actions-ods-banner').style.backgroundColor = hexColor;
+            document.getElementById('actions-ods-icon').className = `ph-fill ${getOdsIconClass(odsId)} text-4xl text-white`;
+
+            const container = document.getElementById('actions-list-container');
+            container.innerHTML = '';
+
+            ods.actions.forEach((act, idx) => {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-3xl p-4 border-2 border-slate-100 shadow-sm hover:shadow-md transition-all flex items-center justify-between cursor-pointer';
+                card.onclick = () => selectActionDetail(act, idx + 1);
+
+                card.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow" style="background-color: ${hexColor}">
+                            <i class="ph-fill ${getOdsIconClass(odsId)} text-2xl"></i>
+                        </div>
+                        <div>
+                            <span class="text-[9px] font-black uppercase text-slate-400">ATITUDE ${idx + 1}</span>
+                            <h4 class="text-xs font-black text-slate-800 leading-tight">${act.title}</h4>
+                            <p class="text-[10px] font-medium text-slate-500 line-clamp-1 mt-0.5">${act.desc}</p>
+                        </div>
+                    </div>
+                    <span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 shrink-0 ml-2">+50 moedas</span>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        let selectedAction = null;
+
+        function selectActionDetail(act, num) {
+            selectedAction = act;
+            const odsId = userState.activeOdsId;
+            const ods = getOdsData(odsId);
+            const hexColor = odsHexColors[odsId] || '#E5243B';
+
+            document.getElementById('action-detail-badge').innerText = `ODS ${odsId}`;
+            document.getElementById('action-detail-ods-title').innerText = ods.title;
+            document.getElementById('action-detail-banner').style.backgroundColor = hexColor;
+            document.getElementById('action-detail-icon').className = `ph-fill ${getOdsIconClass(odsId)} text-4xl text-white`;
+
+            document.getElementById('action-detail-num').innerText = num;
+            document.getElementById('action-detail-num').style.backgroundColor = hexColor;
+            document.getElementById('action-detail-title').innerText = act.title;
+            document.getElementById('action-detail-desc').innerText = act.desc;
+
+            document.getElementById('action-detail-imp-box').style.borderColor = `${hexColor}40`;
+            document.getElementById('action-detail-imp-box').style.backgroundColor = `${hexColor}0D`;
+            document.getElementById('action-detail-imp-icon').style.backgroundColor = hexColor;
+            document.getElementById('action-detail-impact').innerText = act.impact;
+
+            const uploadBtn = document.getElementById('btn-action-upload');
+            uploadBtn.style.backgroundColor = hexColor;
+            uploadBtn.style.borderBottomColor = hexColor;
+
+            navigateTo('view-action-detail');
+        }
+
+        function handleFileSelection(evt) {
+            const file = evt.target.files[0];
+            if (!file) return;
+
+            const previewCard = document.getElementById('file-preview-card');
+            const img = document.getElementById('upload-preview-img');
+            const video = document.getElementById('upload-preview-video');
+            const audio = document.getElementById('upload-preview-audio');
+
+            img.classList.add('hidden');
+            video.classList.add('hidden');
+            audio.classList.add('hidden');
+
+            const url = URL.createObjectURL(file);
+
+            if (file.type.startsWith('image/')) {
+                img.src = url;
+                img.classList.remove('hidden');
+            } else if (file.type.startsWith('video/')) {
+                video.src = url;
+                video.classList.remove('hidden');
+            } else if (file.type.startsWith('audio/')) {
+                audio.src = url;
+                audio.classList.remove('hidden');
+            }
+
+            document.getElementById('preview-file-name').innerText = file.name;
+            previewCard.classList.remove('hidden-view');
+        }
+
+        function submitEvidence() {
+            const odsId = userState.activeOdsId;
+            userState.odsProgress[odsId].step4Completed = true;
+            userState.coins += 50;
+            updateTrailNodesUI();
+            navigateTo('view-analysis');
+        }
+
+        // --- APP INITIALIZATION ---
+        window.onload = function() {
+            initOdsProgress();
+        };
+    </script>
+</body>
+</html>
